@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stratégie de Transformation : Objectif Zéro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Mono:wght@400;500&family=Barlow:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0F0F0D;
+  --gold: #C8960A;
+  --gold2: #E8B82A;
+  --cream: #F5F1E8;
+  --cream2: #EDE8DC;
+  --white: #FFFFFF;
+  --red: #A82820;
+  --green: #1A6A40;
+  --blue: #1A3A7A;
+  --gray: #6B6555;
+  --lgray: #D8D3C8;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--ink);
+  font-family: 'Barlow', sans-serif;
+  color: var(--cream);
+  overflow-x: hidden;
+}
+
+/* ── NAVBAR ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 48px; height: 56px;
+  background: rgba(15,15,13,0.92);
+  border-bottom: 0.5px solid rgba(200,150,10,0.2);
+  backdrop-filter: blur(8px);
+}
+.nav-logo {
+  font-family: 'DM Mono', monospace; font-size: 12px;
+  color: var(--gold); letter-spacing: 0.2em;
+}
+.nav-links { display: flex; gap: 32px; }
+.nav-links a {
+  font-size: 11px; letter-spacing: 0.15em; color: #6B6040;
+  text-decoration: none; transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--gold); }
+.nav-cta {
+  font-size: 11px; letter-spacing: 0.12em; padding: 7px 18px;
+  border: 0.5px solid var(--gold); color: var(--gold);
+  background: none; cursor: pointer; transition: all 0.2s;
+  font-family: 'DM Mono', monospace;
+}
+.nav-cta:hover { background: var(--gold); color: var(--ink); }
+
+/* ── SECTIONS ── */
+section {
+  min-height: 100vh; display: flex; align-items: center;
+  padding: 80px 48px;
+  position: relative; overflow: hidden;
+}
+
+/* ── HERO ── */
+#hero {
+  background: var(--ink);
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 120px;
+}
+.hero-left { flex: 1; max-width: 580px; }
+.hero-eyebrow {
+  display: inline-block;
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 0.22em; color: var(--ink); background: var(--gold);
+  padding: 4px 14px; margin-bottom: 32px;
+}
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(52px, 7vw, 88px);
+  font-weight: 900; line-height: 0.95;
+  color: var(--white); margin-bottom: 28px;
+}
+.hero-title span { color: var(--gold); }
+.hero-sep {
+  width: 64px; height: 3px; background: var(--gold);
+  margin-bottom: 24px;
+}
+.hero-sub {
+  font-size: 16px; font-weight: 300; line-height: 1.7;
+  color: #8A8060; max-width: 420px; margin-bottom: 40px;
+}
+.hero-btn {
+  display: inline-block; padding: 14px 32px;
+  background: var(--gold); color: var(--ink);
+  font-family: 'DM Mono', monospace; font-size: 12px;
+  letter-spacing: 0.18em; font-weight: 500;
+  text-decoration: none; transition: background 0.2s;
+  cursor: pointer; border: none;
+}
+.hero-btn:hover { background: var(--gold2); }
+
+.hero-right {
+  display: flex; flex-direction: column; gap: 14px;
+  margin-left: 80px;
+}
+.zero-pill {
+  display: flex; align-items: center; gap: 0;
+  width: 240px; height: 60px;
+  border: 1px solid;
+  animation: fadeSlideIn 0.6s both;
+}
+.zero-pill-bar { width: 6px; height: 100%; flex-shrink: 0; }
+.zero-pill-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px; font-weight: 700;
+  padding-left: 16px; color: var(--white);
+}
+.z1 { border-color: #1A6A40; animation-delay: 0.2s; }
+.z1 .zero-pill-bar { background: #1A6A40; }
+.z2 { border-color: #1A3A7A; animation-delay: 0.35s; }
+.z2 .zero-pill-bar { background: #1A3A7A; }
+.z3 { border-color: #C8960A; animation-delay: 0.5s; }
+.z3 .zero-pill-bar { background: #C8960A; }
+.z4 { border-color: #6B3FA0; animation-delay: 0.65s; }
+.z4 .zero-pill-bar { background: #6B3FA0; }
+
+/* BG circle deco */
+.hero-circle {
+  position: absolute; right: -120px; top: -80px;
+  width: 620px; height: 620px; border-radius: 50%;
+  border: 0.5px solid rgba(200,150,10,0.12);
+  pointer-events: none;
+}
+.hero-circle2 {
+  position: absolute; right: -60px; top: -20px;
+  width: 480px; height: 480px; border-radius: 50%;
+  border: 0.5px solid rgba(200,150,10,0.06);
+  pointer-events: none;
+}
+
+/* ── PROBLÈME ── */
+#probleme {
+  background: var(--cream);
+  flex-direction: column; align-items: flex-start;
+  gap: 48px;
+}
+.section-tag {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 0.22em; color: var(--gray);
+  border-left: 3px solid var(--gold); padding-left: 12px;
+}
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px, 4vw, 52px); font-weight: 700;
+  color: var(--ink); line-height: 1.1;
+}
+.cards-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 24px; width: 100%;
+}
+.problem-card {
+  background: var(--white); padding: 32px 28px;
+  border-top: 4px solid var(--red);
+  position: relative;
+}
+.problem-icon {
+  width: 48px; height: 48px; border-radius: 50%;
+  border: 1px solid var(--red);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--red); font-size: 20px; font-weight: 700;
+  margin-bottom: 24px; font-family: 'DM Mono', monospace;
+}
+.problem-card h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px; font-weight: 700; color: var(--ink);
+  margin-bottom: 12px;
+}
+.problem-card p { font-size: 14px; line-height: 1.7; color: var(--gray); }
+.bottom-bar {
+  width: 100%; padding: 16px 28px;
+  background: var(--ink); color: var(--gold);
+  font-family: 'DM Mono', monospace; font-size: 12px;
+  font-style: italic; letter-spacing: 0.05em;
+  margin-top: -24px;
+}
+
+/* ── OBJECTIFS ── */
+#objectifs {
+  background: var(--ink);
+  flex-direction: column; align-items: flex-start; gap: 48px;
+}
+.objectifs-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 20px; width: 100%;
+}
+.obj-card {
+  padding: 36px 32px;
+  border: 1px solid;
+  background: #14120A;
+  position: relative; overflow: hidden;
+  transition: transform 0.2s;
+}
+.obj-card:hover { transform: translateY(-2px); }
+.obj-card::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; width: 6px; height: 100%;
+}
+.obj-num {
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  letter-spacing: 0.2em; margin-bottom: 16px;
+}
+.obj-card h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px; font-weight: 700; color: var(--white);
+  margin-bottom: 10px;
+}
+.obj-card p { font-size: 14px; color: #8A8060; line-height: 1.6; }
+
+.o1 { border-color: #1A6A40; }
+.o1::before { background: #1A6A40; }
+.o1 .obj-num { color: #1A6A40; }
+.o2 { border-color: #1A3A7A; }
+.o2::before { background: #1A3A7A; }
+.o2 .obj-num { color: #4A7ABA; }
+.o3 { border-color: #C8960A; }
+.o3::before { background: #C8960A; }
+.o3 .obj-num { color: #C8960A; }
+.o4 { border-color: #6B3FA0; }
+.o4::before { background: #6B3FA0; }
+.o4 .obj-num { color: #9B6FD0; }
+
+/* ── BIM ── */
+#bim {
+  background: #0A0F1A;
+  flex-direction: column; align-items: flex-start; gap: 48px;
+}
+.bim-layout {
+  display: grid; grid-template-columns: 1fr auto 1fr;
+  gap: 24px; width: 100%; align-items: center;
+}
+.bim-col { display: flex; flex-direction: column; gap: 18px; }
+.bim-module {
+  padding: 22px 24px;
+  background: #0D1220;
+  border: 0.5px solid;
+  position: relative;
+}
+.bim-module::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; width: 5px; height: 100%;
+}
+.bim-module h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px; font-weight: 700; color: var(--white);
+  margin-bottom: 5px;
+}
+.bim-module p { font-size: 12px; color: #6B7A90; }
+.bm1 { border-color: #0F6E56; } .bm1::before { background: #0F6E56; }
+.bm2 { border-color: #1A6A40; } .bm2::before { background: #1A6A40; }
+.bm3 { border-color: #993C1D; } .bm3::before { background: #993C1D; }
+.bm4 { border-color: #534AB7; } .bm4::before { background: #534AB7; }
+
+.bim-center {
+  padding: 40px 32px;
+  background: var(--blue);
+  text-align: center; min-width: 180px;
+}
+.bim-center h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 40px; font-weight: 900; color: var(--white);
+  margin-bottom: 8px;
+}
+.bim-center p { font-size: 12px; color: #B5D4F4; letter-spacing: 0.1em; }
+
+.bim-connectors {
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px;
+}
+.connector-line {
+  width: 40px; height: 1px;
+  background: repeating-linear-gradient(90deg, #3A4A60 0, #3A4A60 4px, transparent 4px, transparent 8px);
+}
+
+/* ── CLAUSE ── */
+#clause {
+  background: var(--ink);
+  flex-direction: column; align-items: flex-start; gap: 48px;
+}
+.clause-quote {
+  width: 100%; padding: 40px 48px;
+  background: #140808;
+  border: 1.5px solid var(--red);
+  border-left: 8px solid var(--red);
+  position: relative;
+}
+.quote-mark {
+  font-family: 'Playfair Display', serif;
+  font-size: 120px; line-height: 0.5;
+  color: rgba(168,40,32,0.15);
+  position: absolute; top: 20px; left: 20px;
+  pointer-events: none;
+}
+.clause-text {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(18px, 2.5vw, 26px);
+  font-style: italic; line-height: 1.5;
+  color: var(--white); position: relative; z-index: 1;
+}
+
+.sanctions-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 20px; width: 100%;
+}
+.sanction-card {
+  padding: 28px 24px;
+  background: #14100A; border: 1px solid;
+}
+.s1 { border-color: var(--gold); }
+.s2 { border-color: #E67E22; }
+.s3 { border-color: var(--red); }
+.sanction-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 52px; font-weight: 900;
+  line-height: 1; margin-bottom: 4px;
+}
+.s1 .sanction-num { color: var(--gold); }
+.s2 .sanction-num { color: #E67E22; }
+.s3 .sanction-num { color: var(--red); }
+.sanction-label {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  letter-spacing: 0.2em; color: #5A5030;
+  margin-bottom: 16px;
+}
+.sanction-action {
+  font-size: 14px; font-weight: 600; color: var(--white); line-height: 1.4;
+}
+.clause-footer {
+  width: 100%; padding: 16px 28px;
+  background: rgba(168,40,32,0.2);
+  border: 0.5px solid rgba(168,40,32,0.4);
+  color: var(--white); font-size: 13px; font-style: italic;
+}
+
+/* ── KPIs ── */
+#resultats {
+  background: var(--cream);
+  flex-direction: column; align-items: flex-start; gap: 48px;
+}
+.kpi-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 20px; width: 100%;
+}
+.kpi-card {
+  background: var(--white); padding: 28px 24px;
+  border-top: 4px solid;
+}
+.k1 { border-color: var(--green); }
+.k2 { border-color: var(--blue); }
+.k3 { border-color: var(--gold); }
+.k4 { border-color: #6B3FA0; }
+.kpi-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 52px; font-weight: 900; line-height: 1;
+  margin-bottom: 6px;
+}
+.k1 .kpi-val { color: var(--green); }
+.k2 .kpi-val { color: var(--blue); }
+.k3 .kpi-val { color: var(--gold); }
+.k4 .kpi-val { color: #6B3FA0; }
+.kpi-unit { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+.kpi-sub { font-size: 12px; color: var(--gray); line-height: 1.5; }
+
+.pillars-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 20px; width: 100%;
+}
+.pillar {
+  padding: 24px 22px;
+  background: #EAF5EE;
+  border: 0.5px solid #9FE1CB;
+}
+.pillar h4 { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+.pillar p { font-size: 13px; color: var(--gray); line-height: 1.5; }
+
+/* ── CLOSING ── */
+#closing {
+  background: var(--ink);
+  justify-content: space-between; align-items: center;
+}
+.closing-left { max-width: 580px; }
+.closing-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(48px, 7vw, 80px);
+  font-weight: 900; line-height: 0.95;
+  color: var(--white); margin-bottom: 28px;
+}
+.closing-gold { color: var(--gold); }
+.closing-sep {
+  width: 80px; height: 3px; background: var(--gold); margin-bottom: 24px;
+}
+.closing-tagline {
+  font-size: 16px; color: var(--gold);
+  letter-spacing: 0.05em; line-height: 1.7;
+  margin-bottom: 20px;
+}
+.closing-sub {
+  font-size: 14px; color: #6B6040; line-height: 1.7; margin-bottom: 36px;
+}
+.closing-cta {
+  display: inline-block; padding: 16px 40px;
+  background: var(--gold); color: var(--ink);
+  font-family: 'DM Mono', monospace; font-size: 12px;
+  letter-spacing: 0.18em; font-weight: 500;
+  border: none; cursor: pointer; transition: background 0.2s;
+  text-decoration: none;
+}
+.closing-cta:hover { background: var(--gold2); }
+.closing-right { text-align: right; }
+.closing-zeros { display: flex; flex-direction: column; gap: 10px; }
+.cz {
+  font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700;
+  color: var(--white); letter-spacing: 0.02em;
+  opacity: 0.25; transition: opacity 0.3s;
+}
+.cz:hover { opacity: 1; }
+.closing-author {
+  margin-top: 48px; font-family: 'DM Mono', monospace;
+  font-size: 10px; color: #3A3020; letter-spacing: 0.15em;
+}
+.closing-circle {
+  position: absolute; right: -80px; bottom: -80px;
+  width: 500px; height: 500px; border-radius: 50%;
+  border: 0.5px solid rgba(200,150,10,0.08); pointer-events: none;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateX(24px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-up {
+  opacity: 0; animation: fadeUp 0.7s ease both;
+}
+.d1 { animation-delay: 0.1s; }
+.d2 { animation-delay: 0.2s; }
+.d3 { animation-delay: 0.3s; }
+.d4 { animation-delay: 0.4s; }
+.d5 { animation-delay: 0.5s; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  nav { padding: 0 24px; }
+  .nav-links { display: none; }
+  section { padding: 80px 24px; }
+  .cards-grid, .sanctions-grid, .kpi-grid, .pillars-grid { grid-template-columns: 1fr; }
+  .objectifs-grid { grid-template-columns: 1fr; }
+  .bim-layout { grid-template-columns: 1fr; }
+  .hero-right { margin-left: 0; margin-top: 40px; }
+  #hero { flex-direction: column; align-items: flex-start; }
+  #closing { flex-direction: column; align-items: flex-start; gap: 48px; }
+  .closing-right { text-align: left; }
+  .bim-connectors { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Z-CORE · SOUVERAIN</div>
+  <div class="nav-links">
+    <a href="#probleme">Problème</a>
+    <a href="#objectifs">Objectifs</a>
+    <a href="#bim">BIM</a>
+    <a href="#clause">Contrat</a>
+    <a href="#resultats">Résultats</a>
+  </div>
+  <button class="nav-cta" onclick="document.getElementById('closing').scrollIntoView({behavior:'smooth'})">
+    CONTACT
+  </button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-circle"></div>
+  <div class="hero-circle2"></div>
+  <div class="hero-left">
+    <div class="hero-eyebrow fade-up d1">STRATÉGIE DE TRANSFORMATION</div>
+    <h1 class="hero-title fade-up d2">
+      Objectif<br><span>Zéro</span>
+    </h1>
+    <div class="hero-sep fade-up d3"></div>
+    <p class="hero-sub fade-up d4">
+      La transformation digitale du BTP par la donnée, le BIM et des engagements contractuels absolus.
+    </p>
+    <a href="#probleme" class="hero-btn fade-up d5">DÉCOUVRIR LA STRATÉGIE</a>
+  </div>
+  <div class="hero-right">
+    <div class="zero-pill z1"><div class="zero-pill-bar"></div><span class="zero-pill-text">Zéro Accident</span></div>
+    <div class="zero-pill z2"><div class="zero-pill-bar"></div><span class="zero-pill-text">Zéro Papier</span></div>
+    <div class="zero-pill z3"><div class="zero-pill-bar"></div><span class="zero-pill-text">Zéro Déchet</span></div>
+    <div class="zero-pill z4"><div class="zero-pill-bar"></div><span class="zero-pill-text">Zéro Défaut</span></div>
+  </div>
+</section>
+
+<!-- PROBLÈME -->
+<section id="probleme">
+  <div class="section-tag">EXIGENCES "I DON'T WANT"</div>
+  <h2 class="section-title">Le problème actuel</h2>
+  <div class="cards-grid">
+    <div class="problem-card">
+      <div class="problem-icon">✗</div>
+      <h3>Saisie manuelle</h3>
+      <p>Données fragmentées, erreurs humaines, perte de temps opérationnel quotidien sur le terrain.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-icon">✗</div>
+      <h3>Communication fragmentée</h3>
+      <p>Emails isolés, informations perdues, décisions prises sans visibilité complète du chantier.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-icon">✗</div>
+      <h3>Rapports papier</h3>
+      <p>Aucune traçabilité, impossible à analyser, incompatible avec la facturation numérique.</p>
+    </div>
+  </div>
+  <div class="bottom-bar">Ces 3 frictions coûtent du temps, de l'argent et de la sécurité.</div>
+</section>
+
+<!-- OBJECTIFS -->
+<section id="objectifs">
+  <div class="section-tag">ENGAGEMENTS ABSOLUS</div>
+  <h2 class="section-title" style="color:var(--white)">Les 4 Objectifs Zéro</h2>
+  <div class="objectifs-grid">
+    <div class="obj-card o1">
+      <div class="obj-num">01</div>
+      <h3>Zéro Accident</h3>
+      <p>Sécurité proactive via la donnée. Capteurs terrain, alertes temps réel, élimination du risque avant qu'il ne survienne.</p>
+    </div>
+    <div class="obj-card o2">
+      <div class="obj-num">02</div>
+      <h3>Zéro Papier</h3>
+      <p>Flux 100% digital via le BIM. Aucun rapport manuel accepté. La facturation est conditionnée au numérique.</p>
+    </div>
+    <div class="obj-card o3">
+      <div class="obj-num">03</div>
+      <h3>Zéro Déchet</h3>
+      <p>Optimisation logistique et préfabrication. Commandes au plus juste. Matériaux tracés de la commande à la pose.</p>
+    </div>
+    <div class="obj-card o4">
+      <div class="obj-num">04</div>
+      <h3>Zéro Défaut</h3>
+      <p>Validation sur jumeau numérique avant toute exécution physique. Le défaut est impossible car il est détecté avant de naître.</p>
+    </div>
+  </div>
+</section>
+
+<!-- BIM -->
+<section id="bim">
+  <div class="section-tag">INFRASTRUCTURE NUMÉRIQUE</div>
+  <h2 class="section-title" style="color:var(--white)">BIM — Colonne vertébrale</h2>
+  <div class="bim-layout">
+    <div class="bim-col">
+      <div class="bim-module bm1">
+        <h4>Rapport digital</h4>
+        <p>Zéro saisie manuelle · terrain connecté</p>
+      </div>
+      <div class="bim-module bm2">
+        <h4>Dashboard Zéro</h4>
+        <p>Pilotage temps réel · KPIs en direct</p>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+      <div class="connector-line" style="width:1px;height:40px;background:repeating-linear-gradient(180deg,#3A4A60 0,#3A4A60 4px,transparent 4px,transparent 8px);"></div>
+      <div class="bim-center">
+        <h2>BIM</h2>
+        <p>SOURCE DE VÉRITÉ UNIQUE</p>
+        <p style="margin-top:6px;color:#85B7EB;font-size:11px;">JUMEAU NUMÉRIQUE</p>
+      </div>
+      <div class="connector-line" style="width:1px;height:40px;background:repeating-linear-gradient(180deg,#3A4A60 0,#3A4A60 4px,transparent 4px,transparent 8px);"></div>
+    </div>
+    <div class="bim-col">
+      <div class="bim-module bm3">
+        <h4>Contrat numérique</h4>
+        <p>Facturation conditionnée au digital</p>
+      </div>
+      <div class="bim-module bm4">
+        <h4>Traçabilité 100%</h4>
+        <p>Audit complet · litige impossible</p>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-bar" style="background:#0A0F1A;border:0.5px solid rgba(200,150,10,0.2);">
+    Le BIM n'est pas un outil — c'est la colonne vertébrale de toute la transformation.
+  </div>
+</section>
+
+<!-- CLAUSE -->
+<section id="clause">
+  <div class="section-tag">LEVIER ÉCONOMIQUE</div>
+  <h2 class="section-title" style="color:var(--white)">Clause contractuelle critique</h2>
+  <div class="clause-quote">
+    <div class="quote-mark">"</div>
+    <p class="clause-text">
+      "Le prestataire accepte l'objectif Zéro Papier / Zéro Déchet.<br>
+      Aucun rapport manuel ne sera accepté pour la facturation."
+    </p>
+  </div>
+  <div class="sanctions-grid">
+    <div class="sanction-card s1">
+      <div class="sanction-num">1re</div>
+      <div class="sanction-label">OCCURRENCE</div>
+      <div class="sanction-action">Avertissement écrit formel</div>
+    </div>
+    <div class="sanction-card s2">
+      <div class="sanction-num">2e</div>
+      <div class="sanction-label">OCCURRENCE</div>
+      <div class="sanction-action">Pénalité 2% du montant mensuel</div>
+    </div>
+    <div class="sanction-card s3">
+      <div class="sanction-num">3e+</div>
+      <div class="sanction-label">OCCURRENCE</div>
+      <div class="sanction-action">Suspension sans préavis</div>
+    </div>
+  </div>
+  <div class="clause-footer">
+    Pas une suggestion. Une obligation contractuelle avec conséquences économiques directes.
+  </div>
+</section>
+
+<!-- RÉSULTATS -->
+<section id="resultats">
+  <div class="section-tag">MESURES DE PERFORMANCE</div>
+  <h2 class="section-title">Résultats mesurables</h2>
+  <div class="kpi-grid">
+    <div class="kpi-card k1">
+      <div class="kpi-val">0</div>
+      <div class="kpi-unit">accident</div>
+      <div class="kpi-sub">ce mois · objectif atteint</div>
+    </div>
+    <div class="kpi-card k2">
+      <div class="kpi-val">78%</div>
+      <div class="kpi-unit">zéro papier</div>
+      <div class="kpi-sub">progression · objectif en cours</div>
+    </div>
+    <div class="kpi-card k3">
+      <div class="kpi-val">−38%</div>
+      <div class="kpi-unit">déchets</div>
+      <div class="kpi-sub">réduction depuis déploiement</div>
+    </div>
+    <div class="kpi-card k4">
+      <div class="kpi-val">100%</div>
+      <div class="kpi-unit">zéro défaut</div>
+      <div class="kpi-sub">validation BIM avant exécution</div>
+    </div>
+  </div>
+  <div class="pillars-grid">
+    <div class="pillar">
+      <h4>Terrain 100% digitalisé</h4>
+      <p>Opérateurs connectés en temps réel, décisions basées sur la donnée terrain.</p>
+    </div>
+    <div class="pillar">
+      <h4>Performance KPI en direct</h4>
+      <p>Dashboard Zéro · indicateurs actualisés toutes les heures · alertes proactives.</p>
+    </div>
+    <div class="pillar">
+      <h4>Traçabilité complète</h4>
+      <p>Audit digital · litige impossible · logs de plateforme font foi.</p>
+    </div>
+  </div>
+  <div class="bottom-bar">La transformation se mesure. Les chiffres parlent d'eux-mêmes.</div>
+</section>
+
+<!-- CLOSING -->
+<section id="closing">
+  <div class="closing-circle"></div>
+  <div class="closing-left">
+    <h2 class="closing-title">Chantier<br><span class="closing-gold">Souverain</span></h2>
+    <div class="closing-sep"></div>
+    <p class="closing-tagline">
+      Zéro Accident · Zéro Papier<br>Zéro Déchet · Zéro Défaut
+    </p>
+    <p class="closing-sub">
+      La transformation digitale du BTP n'est plus une option.<br>
+      C'est une obligation contractuelle, mesurable et souveraine.
+    </p>
+    <a href="mailto:contact@example.com" class="closing-cta">DISCUTONS DE VOTRE TRANSFORMATION</a>
+    <div class="closing-author">
+      DÉVELOPPEUR IA INDÉPENDANT · BTP · BIM · DIGITAL · 2025
+    </div>
+  </div>
+  <div class="closing-right">
+    <div class="closing-zeros">
+      <div class="cz">Zéro Accident</div>
+      <div class="cz">Zéro Papier</div>
+      <div class="cz">Zéro Déchet</div>
+      <div class="cz">Zéro Défaut</div>
+    </div>
+  </div>
+</section>
+
+<script>
+// Scroll-triggered fade-in for sections
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.problem-card, .obj-card, .kpi-card, .pillar, .sanction-card, .bim-module').forEach((el, i) => {
+        el.style.animation = `fadeUp 0.6s ease ${i * 0.1}s both`;
+      });
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('section').forEach(s => observer.observe(s));
+
+// Active nav link highlight
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 120) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.style.color = a.getAttribute('href') === '#' + current ? 'var(--gold)' : '';
+  });
+});
+</script>
+</body>
+</html>
