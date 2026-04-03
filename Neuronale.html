@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NetSecurePro | Cybersécurité & Intelligence Artificielle</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <div class="logo">
+        <h1>🛡️ NetSecurePro</h1>
+      </div>
+      <nav>
+        <a href="#">Accueil</a>
+        <a href="#">Produits</a>
+        <a href="#">Services</a>
+        <a href="#">À propos</a>
+        <a href="#">Contact</a>
+      </nav>
+      <div class="auth-buttons">
+        <button class="btn-login" onclick="showLogin()">Se connecter</button>
+        <button class="btn-register">Créer un compte</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <h1>Protégez l'avenir numérique<br>avec l'intelligence artificielle</h1>
+      <p>NetSecurePro combine cybersécurité avancée et IA pour détecter, prévenir et neutraliser les menaces en temps réel.</p>
+      <div class="hero-buttons">
+        <button class="btn-primary">Découvrir nos produits</button>
+        <button class="btn-secondary">Essayer NEURONA gratuitement</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Produits -->
+  <section class="products">
+    <div class="container">
+      <h2>Nos Solutions</h2>
+      <div class="products-grid">
+        <div class="product-card">
+          <h3>🧠 NEURONA</h3>
+          <p>Système de détection de failles de sécurité en temps réel</p>
+        </div>
+        <div class="product-card">
+          <h3>🛡️ CYBERGUARD</h3>
+          <p>Protection intelligente contre phishing et ransomware</p>
+        </div>
+        <div class="product-card">
+          <h3>🔒 NETSECURE</h3>
+          <p>Plateforme de sécurité réseau pour entreprises</p>
+        </div>
+        <div class="product-card">
+          <h3>📡 THREATINTEL</h3>
+          <p>Analyse de menaces et intelligence artificielle</p>
+        </div>
+        <div class="product-card">
+          <h3>💬 SECURECHAT</h3>
+          <p>Messagerie sécurisée avec chiffrement de bout en bout</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Login Modal -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="hideLogin()">&times;</span>
+      <h2>Connexion</h2>
+      <form>
+        <label>Email</label>
+        <input type="email" placeholder="votre@email.com" required>
+        
+        <label>Mot de passe</label>
+        <input type="password" placeholder="••••••••" required>
+        
+        <button type="submit" class="btn-primary">Se connecter</button>
+        <p><a href="#">Mot de passe oublié ?</a></p>
+      </form>
+      <p>Pas encore de compte ? <a href="#" class="register-link">Créer un compte</a></p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
