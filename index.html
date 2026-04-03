@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEURONA - Interface Intégrée</title>
+    <style>
+        /* --- CSS --- */
+        :root {
+            --bg-color: #0a0b10;
+            --panel-bg: #14161f;
+            --accent-color: #00f2ff;
+            --text-color: #e0e0e0;
+            --terminal-green: #00ff41;
+            --border-glow: 0 0 10px rgba(0, 242, 255, 0.3);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Header */
+        header {
+            padding: 1rem 2rem;
+            background: var(--panel-bg);
+            border-bottom: 1px solid var(--accent-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--border-glow);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 4px;
+            color: var(--accent-color);
+            text-transform: uppercase;
+        }
+
+        /* Main Layout */
+        main {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+            padding: 20px;
+            flex-grow: 1;
+        }
+
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Terminal Style */
+        #terminal {
+            background: #000;
+            border: 1px solid var(--terminal-green);
+            font-family: 'Courier New', Courier, monospace;
+            padding: 15px;
+            color: var(--terminal-green);
+            overflow-y: auto;
+            height: 300px;
+            box-shadow: inset 0 0 10px rgba(0, 255, 65, 0.2);
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 15px;
+            background: var(--terminal-green);
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        button {
+            background: transparent;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: var(--accent-color);
+            color: var(--bg-color);
+            box-shadow: var(--border-glow);
+        }
+
+        .status-box {
+            margin-top: auto;
+            border-top: 1px solid #333;
+            padding-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        .online { color: #00ff00; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Neurona v1.0</div>
+        <div id="clock">00:00:00</div>
+    </header>
+
+    <main>
+        <section class="panel">
+            <h3>Système de Contrôle</h3>
+            <div class="controls">
+                <button onclick="logMessage('Initialisation des protocoles...')">Lancer Séquence</button>
+                <button onclick="logMessage('Analyse des ports sécurisés...')">Scanner Réseau</button>
+                <button onclick="clearLogs()">Effacer Console</button>
+            </div>
+            
+            <div class="status-box">
+                Statut: <span class="online">Opérationnel</span><br>
+                Charge CPU: <span id="cpu-load">12%</span>
+            </div>
+        </section>
+
+        <section class="panel">
+            <h3>Console de Sortie</h3>
+            <div id="terminal">
+                <div id="output"></div>
+                <span class="cursor"></span>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        /* --- JavaScript --- */
+        const output = document.getElementById('output');
+        const cpuDisplay = document.getElementById('cpu-load');
+
+        // Fonction pour ajouter des messages au terminal
+        function logMessage(text) {
+            const line = document.createElement('p');
+            line.style.margin = "2px 0";
+            line.innerHTML = `<span style="color: #666;">[${new Date().toLocaleTimeString()}]</span> > ${text}`;
+            output.appendChild(line);
+            
+            // Auto-scroll vers le bas
+            const terminal = document.getElementById('terminal');
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        // Effacer les logs
+        function clearLogs() {
+            output.innerHTML = '';
+            logMessage('Console réinitialisée.');
+        }
+
+        // Horloge temps réel
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString();
+        }
+
+        // Simulation de charge CPU
+        function simulateCPU() {
+            const load = Math.floor(Math.random() * (25 - 5 + 1)) + 5;
+            cpuDisplay.innerText = `${load}%`;
+        }
+
+        // Initialisation
+        setInterval(updateClock, 1000);
+        setInterval(simulateCPU, 3000);
+        
+        window.onload = () => {
+            logMessage("Système NEURONA chargé.");
+            logMessage("En attente de commandes...");
+        };
+    </script>
+</body>
+</html>
