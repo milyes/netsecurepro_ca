@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetSecurePro IA | IA_ZPUCE_CORE</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #0a0a0a;
+            color: #00ff9d;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: linear-gradient(90deg, #001a00, #003300);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #00ff9d;
+        }
+        h1 { margin: 0; font-size: 2.2em; }
+        .subtitle { color: #00cc77; font-size: 1.1em; }
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .card {
+            background: #111;
+            border: 1px solid #00ff9d;
+            border-radius: 8px;
+            padding: 20px;
+            flex: 1;
+            min-width: 320px;
+        }
+        button {
+            background: #001a00;
+            color: #00ff9d;
+            border: 1px solid #00ff9d;
+            padding: 12px 20px;
+            margin: 8px 0;
+            width: 100%;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        button:hover {
+            background: #003300;
+        }
+        .console {
+            background: #000;
+            border: 1px solid #00ff9d;
+            padding: 15px;
+            font-family: monospace;
+            height: 280px;
+            overflow-y: auto;
+            color: #00ff80;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>NetSecurePro IA</h1>
+        <p class="subtitle">IA_ZPUCE_CORE v1.1.0 — Souveraineté Totale</p>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>🚀 ROBOOX ULTRA</h2>
+            <p><strong>Fondateur :</strong> Mohammed Ilyes Zoubirou</p>
+            <p><strong>Mode :</strong> LOCAL_ONLY</p>
+            <p><strong>Souveraineté :</strong> 100% Locale</p>
+            
+            <button onclick="alert('Lancement de la séquence ROBOOX ULTRA... (en développement)')">
+                LANCER ROBOOX ULTRA
+            </button>
+            <button onclick="alert('Scan de souveraineté en cours...')">
+                SCANNER RÉSEAU LOCAL
+            </button>
+            <button onclick="alert('Test ZPUCE_001 lancé')">
+                TEST ZPUCE_001 (ESP32)
+            </button>
+        </div>
+
+        <div class="card">
+            <h2>📟 Console Système</h2>
+            <div class="console" id="console">
+                [17 h 21 min] Système NEURONA chargé.<br>
+                [17 h 21 min] IA_ZPUCE_CORE v1.1.0 initialisé.<br>
+                [17 h 21 min] Mode LOCAL_ONLY activé.<br>
+                [17 h 21 min] Prêt pour Phase 2 (ZPUCE physique).<br>
+                <span style="color:#00ff00;">► En attente de commandes...</span>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        NetSecurePro IA • IA souveraine et sécurisée • Développé par Mohammed Ilyes Zoubirou<br>
+        <a href="https://github.com/milyes" style="color:#00cc77;">GitHub</a> | 
+        MILYES@NETSECUREPRO.CA
+    </footer>
+
+    <script>
+        // Simulation de console
+        setTimeout(() => {
+            const consoleEl = document.getElementById('console');
+            consoleEl.innerHTML += '<br>[17 h 22 min] Perception locale acceptée.';
+        }, 4000);
+    </script>
+</body>
+</html>
