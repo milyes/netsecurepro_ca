@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NetSecurePro IA — ZPUCE_CORE</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #030810;
+  --bg2: #060f1c;
+  --accent: #00d4ff;
+  --accent2: #0066ff;
+  --green: #00ff88;
+  --red: #ff3355;
+  --text: #c8e0f0;
+  --dim: #4a6a8a;
+  --border: rgba(0,212,255,0.2);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Exo 2', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Grid background */
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* Glow orb */
+body::after {
+  content:'';
+  position:fixed;
+  top:-200px; left:50%;
+  transform:translateX(-50%);
+  width:800px; height:800px;
+  background: radial-gradient(circle, rgba(0,102,255,0.08) 0%, transparent 70%);
+  pointer-events:none;
+  z-index:0;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  z-index: 1;
+}
+
+/* NAV */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+  font-family: 'Share Tech Mono', monospace;
+  color: var(--accent);
+  font-size: 14px;
+  letter-spacing: 2px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--dim);
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover { color: var(--accent); }
+
+/* HERO */
+.hero {
+  padding: 80px 0 60px;
+  text-align: center;
+}
+
+.hero-badge {
+  display: inline-block;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--accent);
+  border: 1px solid var(--border);
+  padding: 6px 16px;
+  margin-bottom: 32px;
+  animation: pulse-border 3s infinite;
+}
+
+@keyframes pulse-border {
+  0%,100% { border-color: rgba(0,212,255,0.2); }
+  50% { border-color: rgba(0,212,255,0.6); }
+}
+
+.hero h1 {
+  font-size: clamp(36px, 7vw, 72px);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -1px;
+  margin-bottom: 12px;
+}
+
+.hero h1 span {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-sub {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 13px;
+  color: var(--dim);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.hero-desc {
+  max-width: 520px;
+  margin: 0 auto 40px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--dim);
+}
+
+.hero-btns {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 12px 28px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-decoration: none;
+  transition: all 0.2s;
+  cursor: pointer;
+  border: none;
+  display: inline-block;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--bg);
+}
+.btn-primary:hover {
+  background: #fff;
+  transform: translateY(-2px);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--border);
+}
+.btn-outline:hover {
+  border-color: var(--accent);
+  background: rgba(0,212,255,0.05);
+}
+
+/* STATUS BAR */
+.status-bar {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--border);
+  margin: 50px 0;
+  overflow: hidden;
+}
+
+.status-item {
+  flex: 1;
+  padding: 16px 20px;
+  border-right: 1px solid var(--border);
+  text-align: center;
+}
+.status-item:last-child { border-right: none; }
+
+.status-dot {
+  display: inline-block;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  margin-right: 8px;
+  animation: blink 2s infinite;
+}
+
+@keyframes blink {
+  0%,100% { opacity:1; }
+  50% { opacity:0.3; }
+}
+
+.status-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.status-value {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 13px;
+  color: var(--green);
+  margin-top: 4px;
+}
+
+/* SECTION */
+.section {
+  padding: 60px 0;
+  border-top: 1px solid var(--border);
+}
+
+.section-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 32px;
+  letter-spacing: -0.5px;
+}
+
+/* MODULES GRID */
+.modules {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin-bottom: 40px;
+}
+
+.module {
+  background: var(--bg);
+  padding: 24px 20px;
+  transition: background 0.2s;
+}
+.module:hover { background: var(--bg2); }
+
+.module-icon {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+.module-name {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #fff;
+}
+
+.module-desc {
+  font-size: 12px;
+  color: var(--dim);
+  line-height: 1.5;
+}
+
+/* PHASES */
+.phases {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+
+.phase {
+  background: var(--bg);
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.phase-num {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--dim);
+  min-width: 60px;
+}
+
+.phase-status {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.done { background: var(--green); }
+.active { background: var(--accent); animation: blink 1.5s infinite; }
+.pending { background: var(--dim); }
+
+.phase-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  flex: 1;
+}
+
+.phase-tag {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  padding: 3px 10px;
+  letter-spacing: 1px;
+}
+.tag-done { color: var(--green); border: 1px solid rgba(0,255,136,0.3); }
+.tag-active { color: var(--accent); border: 1px solid rgba(0,212,255,0.3); }
+.tag-pending { color: var(--dim); border: 1px solid rgba(74,106,138,0.3); }
+
+/* SECURITY DEMO */
+.security-demo {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 24px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  line-height: 2;
+}
+
+.log-line { display: flex; gap: 12px; }
+.log-time { color: var(--dim); min-width: 90px; }
+.log-ok { color: var(--green); }
+.log-reject { color: var(--red); }
+.log-info { color: var(--accent); }
+.log-dim { color: var(--dim); }
+
+/* FOOTER */
+footer {
+  padding: 40px 0;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: gap;
+  gap: 20px;
+}
+
+.footer-left {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  color: var(--dim);
+  line-height: 1.8;
+}
+
+.footer-left strong {
+  color: var(--accent);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.footer-right {
+  text-align: right;
+}
+
+.footer-link {
+  display: block;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  color: var(--dim);
+  text-decoration: none;
+  transition: color 0.2s;
+  margin-bottom: 6px;
+}
+.footer-link:hover { color: var(--accent); }
+
+/* ANIMATE IN */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(20px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+.hero-badge { animation: fadeUp 0.5s ease both; }
+.hero h1 { animation: fadeUp 0.5s 0.1s ease both; }
+.hero-sub { animation: fadeUp 0.5s 0.15s ease both; }
+.hero-desc { animation: fadeUp 0.5s 0.2s ease both; }
+.hero-btns { animation: fadeUp 0.5s 0.25s ease both; }
+.status-bar { animation: fadeUp 0.5s 0.3s ease both; }
+
+@media(max-width:600px) {
+  .status-bar { flex-direction: column; }
+  .status-item { border-right: none; border-bottom: 1px solid var(--border); }
+  footer { flex-direction: column; text-align: center; }
+  .footer-right { text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <nav>
+    <div class="nav-logo">NETSECUREPRO.CA</div>
+    <ul class="nav-links">
+      <li><a href="#architecture">Architecture</a></li>
+      <li><a href="#phases">Phases</a></li>
+      <li><a href="https://github.com/milyes/roboox-ultra-training">GitHub</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">IA SOUVERAINE — LOCAL_ONLY</div>
+    <h1>NetSecurePro <span>IA</span></h1>
+    <div class="hero-sub">ZPUCE_CORE · Cybersécurité Cognitive · Distribué</div>
+    <p class="hero-desc">
+      Système d'intelligence artificielle locale et souveraine. Aucune dépendance cloud. 
+      Toutes les décisions sont prises localement, toutes les données restent sur l'appareil.
+    </p>
+    <div class="hero-btns">
+      <a href="https://github.com/milyes/roboox-ultra-training" class="btn btn-primary">CODE SOURCE</a>
+      <a href="#architecture" class="btn btn-outline">ARCHITECTURE</a>
+    </div>
+  </section>
+
+  <!-- STATUS -->
+  <div class="status-bar">
+    <div class="status-item">
+      <div class="status-label"><span class="status-dot"></span>Système</div>
+      <div class="status-value">OPÉRATIONNEL</div>
+    </div>
+    <div class="status-item">
+      <div class="status-label">Souveraineté</div>
+      <div class="status-value">LOCAL_ONLY</div>
+    </div>
+    <div class="status-item">
+      <div class="status-label">Version</div>
+      <div class="status-value">1.2.0</div>
+    </div>
+    <div class="status-item">
+      <div class="status-label">Cloud</div>
+      <div class="status-value" style="color:var(--red)">DÉSACTIVÉ</div>
+    </div>
+  </div>
+
+  <!-- ARCHITECTURE -->
+  <section class="section" id="architecture">
+    <div class="section-label">// MODULE_01</div>
+    <div class="section-title">Architecture ZPUCE_CORE</div>
+
+    <div class="modules">
+      <div class="module">
+        <div class="module-icon">ZCORE</div>
+        <div class="module-name">Z-Core</div>
+        <div class="module-desc">Moteur de décision central. Traitement local autonome.</div>
+      </div>
+      <div class="module">
+        <div class="module-icon">SECURITY</div>
+        <div class="module-name">NetSecurePro</div>
+        <div class="module-desc">Shield cognitif. Détection et blocage des tentatives externes.</div>
+      </div>
+      <div class="module">
+        <div class="module-icon">MEMORY</div>
+        <div class="module-name">Ledger</div>
+        <div class="module-desc">Mémoire persistante avec hash immuable pour chaque événement.</div>
+      </div>
+      <div class="module">
+        <div class="module-icon">PERCEPTION</div>
+        <div class="module-name">Fusion</div>
+        <div class="module-desc">Analyse et fusion des entrées de perception locale.</div>
+      </div>
+      <div class="module">
+        <div class="module-icon">DISTRIBUTED</div>
+        <div class="module-name">Réseau P2P</div>
+        <div class="module-desc">Communication entre nœuds ZPUCE sans serveur central.</div>
+      </div>
+      <div class="module">
+        <div class="module-icon">HARDWARE</div>
+        <div class="module-name">ESP32</div>
+        <div class="module-desc">Module physique embarqué. Bluetooth local. MicroPython.</div>
+      </div>
+    </div>
+
+    <!-- LOG DEMO -->
+    <div class="security-demo">
+      <div class="log-line"><span class="log-time">[BOOT]</span><span class="log-info">IA_ZPUCE_CORE démarré — Souveraineté: LOCAL_ONLY</span></div>
+      <div class="log-line"><span class="log-time">[18:23:09]</span><span class="log-ok">✓ Perception locale ACCEPTÉE — Hash: f7f43962aad4</span></div>
+      <div class="log-line"><span class="log-time">[18:39:24]</span><span class="log-ok">✓ Décision exécutée — Confiance: 100%</span></div>
+      <div class="log-line"><span class="log-time">[18:49:49]</span><span class="log-reject">✗ EXTERNAL_CLOUD_ATTEMPT — Action rejetée</span></div>
+      <div class="log-line"><span class="log-time">[18:49:49]</span><span class="log-dim">⚡ Verrouillage d'urgence — Hash: 20399ea6f31c</span></div>
+      <div class="log-line"><span class="log-time">[STATUS]</span><span class="log-info">7 événements dans le ledger — Système stable</span></div>
+    </div>
+  </section>
+
+  <!-- PHASES -->
+  <section class="section" id="phases">
+    <div class="section-label">// MODULE_02</div>
+    <div class="section-title">Roadmap</div>
+
+    <div class="phases">
+      <div class="phase">
+        <span class="phase-num">PHASE 01</span>
+        <span class="phase-status done"></span>
+        <span class="phase-name">Logiciel — ZPUCE_CORE Python</span>
+        <span class="phase-tag tag-done">TERMINÉ</span>
+      </div>
+      <div class="phase">
+        <span class="phase-num">PHASE 02</span>
+        <span class="phase-status done"></span>
+        <span class="phase-name">Simulation ESP32 — Module physique</span>
+        <span class="phase-tag tag-done">TERMINÉ</span>
+      </div>
+      <div class="phase">
+        <span class="phase-num">PHASE 03</span>
+        <span class="phase-status active"></span>
+        <span class="phase-name">Réseau P2P distribué LOCAL</span>
+        <span class="phase-tag tag-active">EN COURS</span>
+      </div>
+      <div class="phase">
+        <span class="phase-num">PHASE 04</span>
+        <span class="phase-status pending"></span>
+        <span class="phase-name">Hardware FPGA — Puce dédiée</span>
+        <span class="phase-tag tag-pending">PLANIFIÉ</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-left">
+      <strong>NetSecurePro IA</strong>
+      Fondateur : Mohammed Ilyes Zoubirou<br>
+      milyes@netsecurepro.ca
+    </div>
+    <div class="footer-right">
+      <a href="https://github.com/milyes" class="footer-link">github.com/milyes</a>
+      <a href="https://github.com/milyes/roboox-ultra-training" class="footer-link">roboox-ultra-training</a>
+      <a href="mailto:milyes@netsecurepro.ca" class="footer-link">milyes@netsecurepro.ca</a>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>
