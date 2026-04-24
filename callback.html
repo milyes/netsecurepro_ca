@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetSecurePro - Callback GitHub</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0d1117;
+            color: #00ff9d;
+            text-align: center;
+            padding: 50px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>NetSecurePro Sovereign AI</h1>
+        <p>Connexion GitHub en cours...</p>
+        <pre id="log">Initialisation...</pre>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        const state = urlParams.get('state');
+
+        const log = document.getElementById('log');
+
+        if (code) {
+            log.textContent = `Code reçu ✅\nEnvoi vers le backend...\n\ncode=${code.substring(0,15)}...`;
+            
+            // Ici on pourra plus tard envoyer le code à ton backend
+            fetch('https://netsecurepro.ca/api/github/callback', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code: code, state: state })
+            })
+            .then(res => res.json())
+            .then(data => {
+                log.textContent += `\n\nSuccès ! Token reçu.\nBienvenue ${data.user || 'dans Z-CORE'}`;
+            })
+            .catch(err => {
+                log.textContent += `\n\nErreur : ${err.message}`;
+            });
+        } else {
+            log.textContent = "Aucun code reçu. Erreur dans le flux OAuth.";
+        }
+    </script>
+</body>
+</html>
