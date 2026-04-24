@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Z-CORE • Callback</title>
+    <style>
+        body { font-family: 'Courier New', monospace; background:#0d1117; color:#00ff9d; text-align:center; padding:40px; }
+        .success { color: #00ff9d; }
+        pre { background:#161b22; padding:20px; border-radius:8px; text-align:left; display:inline-block; }
+    </style>
+</head>
+<body>
+    <h1>NetSecurePro Sovereign AI</h1>
+    <h2>Z-CORE • Authentification GitHub</h2>
+    
+    <pre id="log">Initialisation du module d'authentification...</pre>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get('code');
+
+        const log = document.getElementById('log');
+
+        if (code) {
+            log.innerHTML = `✅ Code d'autorisation reçu\n\nCode : ${code.substring(0, 20)}...\n\nEnvoi sécurisé vers Z-CORE...`;
+            
+            // À remplacer plus tard par un vrai appel à ton backend
+            fetch('/api/github/callback', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ code })
+            })
+            .then(r => r.json())
+            .then(data => log.innerHTML += `\n\n🎉 Connexion réussie !\nBienvenue dans IA22_LOGIC.`);
+        } else {
+            log.textContent = "❌ Aucun code reçu. Erreur OAuth.";
+        }
+    </script>
+</body>
+</html>
