@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Z-CORE — Architecture Souveraine 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:   #04060d;
+  --bg2:  #070c18;
+  --bg3:  #0b1225;
+  --z:    #00d4ff;
+  --z2:   #00a8cc;
+  --med:  #00ffb3;
+  --sec:  #ff6b35;
+  --gold: #ffd700;
+  --psy:  #a78bfa;
+  --nutri:#7ee8a2;
+  --text: #c8dff0;
+  --text2:#5a7a9a;
+  --glow-z:    0 0 20px rgba(0,212,255,0.4);
+  --glow-med:  0 0 20px rgba(0,255,179,0.4);
+  --glow-sec:  0 0 20px rgba(255,107,53,0.4);
+  --glow-gold: 0 0 20px rgba(255,215,0,0.4);
+  --glow-psy:  0 0 20px rgba(167,139,250,0.4);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Exo 2',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* GRID OVERLAY */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(0,212,255,0.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,212,255,0.03) 1px,transparent 1px);
+  background-size:40px 40px;
+  pointer-events:none;
+  z-index:0;
+}
+
+canvas#particles{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+}
+
+.wrapper{
+  position:relative;
+  z-index:1;
+  max-width:1400px;
+  margin:0 auto;
+  padding:40px 32px 80px;
+}
+
+/* HEADER */
+header{
+  text-align:center;
+  margin-bottom:60px;
+  animation:fadeDown 0.8s ease both;
+}
+.logo-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  background:rgba(0,212,255,0.06);
+  border:1px solid rgba(0,212,255,0.2);
+  border-radius:100px;
+  padding:6px 20px;
+  font-family:'Orbitron',sans-serif;
+  font-size:11px;
+  letter-spacing:3px;
+  color:var(--z);
+  text-transform:uppercase;
+  margin-bottom:24px;
+}
+.logo-dot{
+  width:7px;height:7px;
+  border-radius:50%;
+  background:var(--z);
+  box-shadow:var(--glow-z);
+  animation:pulse-dot 2s infinite;
+}
+h1{
+  font-family:'Orbitron',sans-serif;
+  font-size:clamp(28px,4vw,52px);
+  font-weight:900;
+  letter-spacing:2px;
+  background:linear-gradient(135deg,var(--z) 0%,#ffffff 50%,var(--z2) 100%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  margin-bottom:12px;
+}
+.subtitle{
+  color:var(--text2);
+  font-size:14px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  font-weight:300;
+}
+.author-tag{
+  margin-top:16px;
+  font-size:12px;
+  color:var(--text2);
+  font-family:'DM Mono',monospace;
+}
+.author-tag span{color:var(--z);}
+
+/* BOOT BAR */
+.boot-bar{
+  width:280px;
+  height:2px;
+  background:rgba(0,212,255,0.1);
+  border-radius:2px;
+  margin:20px auto 0;
+  overflow:hidden;
+}
+.boot-fill{
+  height:100%;
+  background:linear-gradient(90deg,var(--z2),var(--z));
+  border-radius:2px;
+  animation:bootFill 2s ease forwards;
+  box-shadow:var(--glow-z);
+}
+
+/* SECTION TITLES */
+.section-label{
+  font-family:'Orbitron',sans-serif;
+  font-size:10px;
+  letter-spacing:4px;
+  color:var(--text2);
+  text-transform:uppercase;
+  margin-bottom:24px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.section-label::after{
+  content:'';
+  flex:1;
+  height:1px;
+  background:linear-gradient(90deg,rgba(0,212,255,0.2),transparent);
+}
+
+/* MAIN ECOSYSTEM GRID */
+.ecosystem{
+  display:grid;
+  grid-template-columns:1fr 2fr 1fr;
+  gap:20px;
+  margin-bottom:40px;
+  align-items:start;
+}
+
+/* PANEL BASE */
+.panel{
+  background:var(--bg2);
+  border-radius:12px;
+  padding:24px;
+  position:relative;
+  overflow:hidden;
+  transition:transform 0.3s ease, box-shadow 0.3s ease;
+}
+.panel:hover{
+  transform:translateY(-3px);
+}
+.panel::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,0.02) 0%,transparent 60%);
+  pointer-events:none;
+}
+
+/* CORNER BRACKETS */
+.panel .corner{
+  position:absolute;
+  width:14px;height:14px;
+}
+.panel .corner.tl{top:8px;left:8px;border-top:2px solid;border-left:2px solid;border-radius:2px 0 0 0;}
+.panel .corner.tr{top:8px;right:8px;border-top:2px solid;border-right:2px solid;border-radius:0 2px 0 0;}
+.panel .corner.bl{bottom:8px;left:8px;border-bottom:2px solid;border-left:2px solid;border-radius:0 0 0 2px;}
+.panel .corner.br{bottom:8px;right:8px;border-bottom:2px solid;border-right:2px solid;border-radius:0 0 2px 0;}
+
+.panel.z    .corner{border-color:var(--z);}
+.panel.med  .corner{border-color:var(--med);}
+.panel.sec  .corner{border-color:var(--sec);}
+.panel.gold .corner{border-color:var(--gold);}
+.panel.psy  .corner{border-color:var(--psy);}
+.panel.nutri .corner{border-color:var(--nutri);}
+
+.panel.z:hover   {box-shadow:var(--glow-z),0 8px 32px rgba(0,0,0,0.4);}
+.panel.med:hover {box-shadow:var(--glow-med),0 8px 32px rgba(0,0,0,0.4);}
+.panel.sec:hover {box-shadow:var(--glow-sec),0 8px 32px rgba(0,0,0,0.4);}
+.panel.gold:hover{box-shadow:var(--glow-gold),0 8px 32px rgba(0,0,0,0.4);}
+.panel.psy:hover {box-shadow:var(--glow-psy),0 8px 32px rgba(0,0,0,0.4);}
+
+/* PANEL HEADER */
+.panel-header{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:16px;
+}
+.panel-icon{
+  width:32px;height:32px;
+  border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;
+  flex-shrink:0;
+}
+.panel.z    .panel-icon{background:rgba(0,212,255,0.1);}
+.panel.med  .panel-icon{background:rgba(0,255,179,0.1);}
+.panel.sec  .panel-icon{background:rgba(255,107,53,0.1);}
+.panel.gold .panel-icon{background:rgba(255,215,0,0.1);}
+.panel.psy  .panel-icon{background:rgba(167,139,250,0.1);}
+.panel.nutri .panel-icon{background:rgba(126,232,162,0.1);}
+
+.panel-title{
+  font-family:'Orbitron',sans-serif;
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:1px;
+}
+.panel.z    .panel-title{color:var(--z);}
+.panel.med  .panel-title{color:var(--med);}
+.panel.sec  .panel-title{color:var(--sec);}
+.panel.gold .panel-title{color:var(--gold);}
+.panel.psy  .panel-title{color:var(--psy);}
+.panel.nutri .panel-title{color:var(--nutri);}
+
+.panel-version{
+  font-family:'DM Mono',monospace;
+  font-size:10px;
+  color:var(--text2);
+  margin-left:auto;
+}
+
+/* BADGE */
+.badge{
+  display:inline-block;
+  font-family:'Orbitron',sans-serif;
+  font-size:8px;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  padding:3px 8px;
+  border-radius:4px;
+  margin-bottom:14px;
+}
+.badge.active{background:rgba(0,212,255,0.1);color:var(--z);border:1px solid rgba(0,212,255,0.3);}
+.badge.dev   {background:rgba(255,215,0,0.1);color:var(--gold);border:1px solid rgba(255,215,0,0.3);}
+.badge.infra {background:rgba(255,107,53,0.1);color:var(--sec);border:1px solid rgba(255,107,53,0.3);}
+
+/* FEATURE LIST */
+.feat-list{
+  list-style:none;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.feat-list li{
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  font-size:12px;
+  color:var(--text2);
+  line-height:1.5;
+}
+.feat-list li::before{
+  content:'›';
+  flex-shrink:0;
+  margin-top:1px;
+}
+.panel.z    .feat-list li::before{color:var(--z);}
+.panel.med  .feat-list li::before{color:var(--med);}
+.panel.sec  .feat-list li::before{color:var(--sec);}
+.panel.gold .feat-list li::before{color:var(--gold);}
+.panel.psy  .feat-list li::before{color:var(--psy);}
+.panel.nutri .feat-list li::before{color:var(--nutri);}
+
+/* ZCORE CENTER PANEL */
+.zcore-center{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+.zcore-main{
+  text-align:center;
+  background:var(--bg3);
+  border-radius:16px;
+  padding:32px 24px;
+  border:1px solid rgba(0,212,255,0.15);
+  position:relative;
+  overflow:hidden;
+}
+.zcore-main::after{
+  content:'';
+  position:absolute;
+  width:200px;height:200px;
+  background:radial-gradient(circle,rgba(0,212,255,0.08) 0%,transparent 70%);
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  animation:center-pulse 3s ease-in-out infinite;
+}
+.zcore-hex{
+  width:80px;height:80px;
+  margin:0 auto 16px;
+  position:relative;
+}
+.zcore-hex svg{animation:spin-slow 20s linear infinite;}
+.zcore-name{
+  font-family:'Orbitron',sans-serif;
+  font-size:22px;
+  font-weight:900;
+  color:var(--z);
+  letter-spacing:3px;
+  text-shadow:0 0 30px rgba(0,212,255,0.6);
+  margin-bottom:4px;
+}
+.zcore-full{
+  font-size:10px;
+  color:var(--text2);
+  letter-spacing:1.5px;
+  font-family:'DM Mono',monospace;
+  margin-bottom:20px;
+}
+.principles{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  text-align:left;
+}
+.principle{
+  background:rgba(0,212,255,0.04);
+  border:1px solid rgba(0,212,255,0.08);
+  border-radius:8px;
+  padding:10px;
+  font-size:11px;
+}
+.principle strong{
+  display:block;
+  font-family:'Orbitron',sans-serif;
+  font-size:9px;
+  color:var(--z);
+  letter-spacing:1px;
+  margin-bottom:3px;
+}
+.principle span{color:var(--text2);}
+
+/* ROUTING PROTOCOL */
+.routing-panel{
+  background:var(--bg3);
+  border-radius:12px;
+  padding:20px;
+  border:1px solid rgba(0,212,255,0.08);
+}
+.routing-title{
+  font-family:'Orbitron',sans-serif;
+  font-size:10px;
+  color:var(--z);
+  letter-spacing:2px;
+  margin-bottom:14px;
+}
+.route-steps{
+  display:flex;
+  gap:0;
+  align-items:center;
+}
+.route-step{
+  flex:1;
+  text-align:center;
+  font-size:10px;
+  color:var(--text2);
+  font-family:'DM Mono',monospace;
+}
+.route-step span{
+  display:block;
+  width:28px;height:28px;
+  border-radius:50%;
+  background:rgba(0,212,255,0.08);
+  border:1px solid rgba(0,212,255,0.2);
+  margin:0 auto 6px;
+  line-height:26px;
+  font-size:11px;
+  color:var(--z);
+}
+.route-arrow{
+  color:rgba(0,212,255,0.3);
+  font-size:14px;
+  flex-shrink:0;
+  margin:0 -2px;
+  margin-bottom:14px;
+}
+
+/* SIDE STACKS */
+.side-stack{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+/* MODULES ROW */
+.modules-row{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+  margin-bottom:40px;
+}
+
+/* Z-H202 SECTION */
+.zh202-section{
+  margin-bottom:40px;
+}
+.zh202-layers{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:12px;
+}
+.layer-card{
+  background:var(--bg2);
+  border-radius:10px;
+  padding:16px 12px;
+  text-align:center;
+  border:1px solid rgba(255,255,255,0.04);
+  position:relative;
+  overflow:hidden;
+  transition:transform 0.3s, box-shadow 0.3s;
+  cursor:default;
+}
+.layer-card:hover{
+  transform:translateY(-4px);
+}
+.layer-num{
+  font-family:'Orbitron',sans-serif;
+  font-size:9px;
+  color:var(--text2);
+  letter-spacing:2px;
+  margin-bottom:8px;
+}
+.layer-icon{font-size:22px;margin-bottom:8px;}
+.layer-name{
+  font-family:'Orbitron',sans-serif;
+  font-size:9px;
+  font-weight:700;
+  letter-spacing:0.5px;
+  margin-bottom:8px;
+  line-height:1.4;
+}
+.layer-desc{
+  font-size:10px;
+  color:var(--text2);
+  line-height:1.5;
+}
+/* Layer color theming */
+.layer-card:nth-child(1){border-top:2px solid #5b8fff;}
+.layer-card:nth-child(1) .layer-name{color:#5b8fff;}
+.layer-card:nth-child(2){border-top:2px solid #a78bfa;}
+.layer-card:nth-child(2) .layer-name{color:#a78bfa;}
+.layer-card:nth-child(3){border-top:2px solid var(--z);}
+.layer-card:nth-child(3) .layer-name{color:var(--z);}
+.layer-card:nth-child(4){border-top:2px solid var(--med);}
+.layer-card:nth-child(4) .layer-name{color:var(--med);}
+.layer-card:nth-child(5){border-top:2px solid var(--gold);}
+.layer-card:nth-child(5) .layer-name{color:var(--gold);}
+.layer-card:nth-child(6){border-top:2px solid var(--sec);}
+.layer-card:nth-child(6) .layer-name{color:var(--sec);}
+
+/* IA22 TUNNEL */
+.tunnel-section{
+  margin-bottom:40px;
+}
+.tunnel-flow{
+  display:flex;
+  align-items:stretch;
+  gap:0;
+  background:var(--bg2);
+  border-radius:12px;
+  overflow:hidden;
+  border:1px solid rgba(255,107,53,0.1);
+}
+.tunnel-node{
+  flex:1;
+  padding:20px 16px;
+  text-align:center;
+  position:relative;
+}
+.tunnel-node:not(:last-child)::after{
+  content:'→';
+  position:absolute;
+  right:-10px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--sec);
+  font-size:18px;
+  z-index:2;
+  text-shadow:var(--glow-sec);
+}
+.tunnel-node:nth-child(odd){background:rgba(255,107,53,0.03);}
+.tunnel-label{
+  font-family:'Orbitron',sans-serif;
+  font-size:9px;
+  letter-spacing:1.5px;
+  color:var(--sec);
+  margin-bottom:6px;
+}
+.tunnel-tech{
+  font-family:'DM Mono',monospace;
+  font-size:11px;
+  color:var(--text);
+  margin-bottom:4px;
+}
+.tunnel-sub{font-size:10px;color:var(--text2);}
+
+/* ROADMAP */
+.roadmap{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+  margin-bottom:40px;
+}
+.roadmap-item{
+  background:var(--bg2);
+  border-radius:10px;
+  padding:20px;
+  border-left:3px solid;
+  position:relative;
+}
+.roadmap-item:nth-child(1){border-color:var(--z);}
+.roadmap-item:nth-child(2){border-color:var(--med);}
+.roadmap-item:nth-child(3){border-color:var(--gold);}
+.roadmap-item:nth-child(4){border-color:var(--psy);}
+.roadmap-q{
+  font-family:'Orbitron',sans-serif;
+  font-size:18px;
+  font-weight:900;
+  margin-bottom:4px;
+}
+.roadmap-item:nth-child(1) .roadmap-q{color:var(--z);}
+.roadmap-item:nth-child(2) .roadmap-q{color:var(--med);}
+.roadmap-item:nth-child(3) .roadmap-q{color:var(--gold);}
+.roadmap-item:nth-child(4) .roadmap-q{color:var(--psy);}
+.roadmap-date{font-size:11px;color:var(--text2);margin-bottom:14px;font-family:'DM Mono',monospace;}
+.roadmap-items{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.roadmap-items li{font-size:11px;color:var(--text2);display:flex;gap:6px;align-items:flex-start;}
+.roadmap-items li::before{content:'·';flex-shrink:0;}
+.roadmap-item:nth-child(1) .roadmap-items li::before{color:var(--z);}
+.roadmap-item:nth-child(2) .roadmap-items li::before{color:var(--med);}
+.roadmap-item:nth-child(3) .roadmap-items li::before{color:var(--gold);}
+.roadmap-item:nth-child(4) .roadmap-items li::before{color:var(--psy);}
+.roadmap-tag{
+  position:absolute;
+  top:12px;right:12px;
+  font-size:8px;
+  font-family:'Orbitron',sans-serif;
+  letter-spacing:1px;
+  padding:2px 7px;
+  border-radius:3px;
+}
+.tag-current{background:rgba(0,212,255,0.1);color:var(--z);}
+.tag-soon{background:rgba(0,255,179,0.1);color:var(--med);}
+.tag-plan{background:rgba(255,215,0,0.1);color:var(--gold);}
+.tag-vision{background:rgba(167,139,250,0.1);color:var(--psy);}
+
+/* FOOTER */
+footer{
+  text-align:center;
+  padding-top:40px;
+  border-top:1px solid rgba(0,212,255,0.08);
+}
+.footer-brand{
+  font-family:'Orbitron',sans-serif;
+  font-size:12px;
+  color:var(--z);
+  letter-spacing:3px;
+  margin-bottom:8px;
+}
+.footer-meta{
+  font-size:11px;
+  color:var(--text2);
+  font-family:'DM Mono',monospace;
+}
+
+/* STATUS BAR */
+.status-bar{
+  display:flex;
+  gap:20px;
+  justify-content:center;
+  margin-bottom:48px;
+  flex-wrap:wrap;
+}
+.status-item{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  font-size:11px;
+  color:var(--text2);
+  font-family:'DM Mono',monospace;
+}
+.status-dot{
+  width:6px;height:6px;
+  border-radius:50%;
+}
+.status-dot.on{background:var(--med);box-shadow:0 0 8px var(--med);animation:pulse-dot 2s infinite;}
+.status-dot.dev{background:var(--gold);box-shadow:0 0 8px var(--gold);}
+.status-dot.off{background:var(--text2);}
+
+/* ANIMATIONS */
+@keyframes fadeDown{
+  from{opacity:0;transform:translateY(-20px);}
+  to{opacity:1;transform:translateY(0);}
+}
+@keyframes bootFill{
+  from{width:0;}
+  to{width:100%;}
+}
+@keyframes pulse-dot{
+  0%,100%{opacity:1;}
+  50%{opacity:0.3;}
+}
+@keyframes spin-slow{
+  from{transform:rotate(0deg);}
+  to{transform:rotate(360deg);}
+}
+@keyframes center-pulse{
+  0%,100%{opacity:0.5;transform:translate(-50%,-50%) scale(1);}
+  50%{opacity:1;transform:translate(-50%,-50%) scale(1.3);}
+}
+
+/* RESPONSIVE */
+@media(max-width:1100px){
+  .ecosystem{grid-template-columns:1fr 1fr;}
+  .zh202-layers{grid-template-columns:repeat(3,1fr);}
+  .roadmap{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:700px){
+  .ecosystem{grid-template-columns:1fr;}
+  .modules-row{grid-template-columns:1fr;}
+  .zh202-layers{grid-template-columns:1fr 1fr;}
+  .roadmap{grid-template-columns:1fr;}
+  .tunnel-flow{flex-direction:column;}
+  .tunnel-node::after{display:none;}
+}
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo-badge"><div class="logo-dot"></div>NetSecurePro IA · milyes@netsecurepro.ca</div>
+    <h1>Z-CORE ECOSYSTEM</h1>
+    <p class="subtitle">Architecture Souveraine Modulaire — 2026</p>
+    <p class="author-tag">Fondateur &amp; Architecte : <span>Mohammed Ilyes Zoubirou</span> · Nepean, Ontario · Canada</p>
+    <div class="boot-bar"><div class="boot-fill"></div></div>
+  </header>
+
+  <!-- STATUS BAR -->
+  <div class="status-bar">
+    <div class="status-item"><div class="status-dot on"></div>Z-CORE v1.0 — ACTIF</div>
+    <div class="status-item"><div class="status-dot on"></div>MedicalTrackerPro34 — ACTIF</div>
+    <div class="status-item"><div class="status-dot on"></div>NetSecurePro — ACTIF</div>
+    <div class="status-item"><div class="status-dot on"></div>SnowflakeSync — ACTIF</div>
+    <div class="status-item"><div class="status-dot dev"></div>NutriTrack — Q2 2026</div>
+    <div class="status-item"><div class="status-dot dev"></div>PsyCore — Q2 2026</div>
+    <div class="status-item"><div class="status-dot on"></div>IA22_TUNNEL — ACTIF</div>
+  </div>
+
+  <!-- CORE ECOSYSTEM -->
+  <div class="section-label">01 — Orchestrateur Central &amp; Modules Primaires</div>
+  <div class="ecosystem">
+
+    <!-- LEFT STACK -->
+    <div class="side-stack">
+      <div class="panel med">
+        <div class="corner tl"></div><div class="corner tr"></div>
+        <div class="corner bl"></div><div class="corner br"></div>
+        <div class="panel-header">
+          <div class="panel-icon">🏥</div>
+          <div>
+            <div class="panel-title">MedicalTracker Pro34</div>
+            <div class="panel-version">v3.4</div>
+          </div>
+        </div>
+        <div class="badge active">● Actif</div>
+        <ul class="feat-list">
+          <li>Symptômes &amp; constantes vitales</li>
+          <li>DMP / FHIR R4 complet</li>
+          <li>Triage intelligent</li>
+          <li>Médicaments &amp; interactions</li>
+          <li>Urgence niveau 3 → 15/SAMU</li>
+        </ul>
+      </div>
+
+      <div class="panel gold">
+        <div class="corner tl"></div><div class="corner tr"></div>
+        <div class="corner bl"></div><div class="corner br"></div>
+        <div class="panel-header">
+          <div class="panel-icon">❄️</div>
+          <div>
+            <div class="panel-title">SnowflakeSync</div>
+            <div class="panel-version">v1.2</div>
+          </div>
+        </div>
+        <div class="badge active">● Actif</div>
+        <ul class="feat-list">
+          <li>Export anonymisé AES-256</li>
+          <li>Cortex AI analytics</li>
+          <li>Population data cloud</li>
+          <li>Snowflake Native App</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- CENTER — ZCORE -->
+    <div class="zcore-center">
+      <div class="zcore-main panel z">
+        <div class="corner tl"></div><div class="corner tr"></div>
+        <div class="corner bl"></div><div class="corner br"></div>
+        <div class="zcore-hex">
+          <svg viewBox="0 0 80 80" width="80" height="80" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="40,4 72,22 72,58 40,76 8,58 8,22"
+              fill="none" stroke="rgba(0,212,255,0.3)" stroke-width="1"/>
+            <polygon points="40,14 62,26 62,54 40,66 18,54 18,26"
+              fill="none" stroke="rgba(0,212,255,0.5)" stroke-width="1.5"/>
+            <circle cx="40" cy="40" r="8" fill="none" stroke="#00d4ff" stroke-width="2"/>
+            <circle cx="40" cy="40" r="3" fill="#00d4ff"/>
+            <!-- circuit lines -->
+            <line x1="40" y1="32" x2="40" y2="14" stroke="rgba(0,212,255,0.4)" stroke-width="1"/>
+            <line x1="40" y1="48" x2="40" y2="66" stroke="rgba(0,212,255,0.4)" stroke-width="1"/>
+            <line x1="33" y1="36" x2="18" y2="26" stroke="rgba(0,212,255,0.3)" stroke-width="1"/>
+            <line x1="47" y1="44" x2="62" y2="54" stroke="rgba(0,212,255,0.3)" stroke-width="1"/>
+            <line x1="47" y1="36" x2="62" y2="26" stroke="rgba(0,212,255,0.3)" stroke-width="1"/>
+            <line x1="33" y1="44" x2="18" y2="54" stroke="rgba(0,212,255,0.3)" stroke-width="1"/>
+          </svg>
+        </div>
+        <div class="zcore-name">Z-CORE</div>
+        <div class="zcore-full">Zoubirou Core Orchestration &amp; Reasoning Engine · v1.0</div>
+        <div class="principles">
+          <div class="principle"><strong>Zero-Trust</strong><span>Chaque requête authentifiée. Tout chiffré.</span></div>
+          <div class="principle"><strong>Souveraineté</strong><span>100% local. Aucune donnée expose.</span></div>
+          <div class="principle"><strong>Modularité</strong><span>API standardisée. Plug-and-play.</span></div>
+          <div class="principle"><strong>Conformité</strong><span>RGPD Art.32 · HDS · ISO27001</span></div>
+        </div>
+      </div>
+
+      <!-- ROUTING -->
+      <div class="routing-panel">
+        <div class="routing-title">⟳ Protocole de Routage Z-CORE</div>
+        <div class="route-steps">
+          <div class="route-step"><span>1</span>Analyse</div>
+          <div class="route-arrow">→</div>
+          <div class="route-step"><span>2</span>Route</div>
+          <div class="route-arrow">→</div>
+          <div class="route-step"><span>3</span>Chiffre</div>
+          <div class="route-arrow">→</div>
+          <div class="route-step"><span>4</span>Fusionne</div>
+          <div class="route-arrow">→</div>
+          <div class="route-step"><span>5</span>Éthique</div>
+          <div class="route-arrow">→</div>
+          <div class="route-step"><span>6</span>Envoi</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT STACK -->
+    <div class="side-stack">
+      <div class="panel sec">
+        <div class="corner tl"></div><div class="corner tr"></div>
+        <div class="corner bl"></div><div class="corner br"></div>
+        <div class="panel-header">
+          <div class="panel-icon">🔐</div>
+          <div>
+            <div class="panel-title">NetSecurePro</div>
+            <div class="panel-version">v2.4</div>
+          </div>
+        </div>
+        <div class="badge active">● Actif</div>
+        <ul class="feat-list">
+          <li>AES-256-GCM + TLS 1.3</li>
+          <li>WAF / IDS / 2FA</li>
+          <li>Audit RGPD &amp; CVE</li>
+          <li>Zero-Trust enforcement</li>
+          <li>Mémoire chiffrée 90j</li>
+        </ul>
+      </div>
+
+      <div class="panel z">
+        <div class="corner tl"></div><div class="corner tr"></div>
+        <div class="corner bl"></div><div class="corner br"></div>
+        <div class="panel-header">
+          <div class="panel-icon">🛡️</div>
+          <div>
+            <div class="panel-title">Module Éthique ARMED</div>
+          </div>
+        </div>
+        <div class="badge active">● Transversal</div>
+        <ul class="feat-list">
+          <li>Intercepte toutes réponses</li>
+          <li>RGPD Art.32 · HDS</li>
+          <li>Garde-fou non contournable</li>
+          <li>Aucun diagnostic définitif</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODULES EN DEV -->
+  <div class="section-label">02 — Modules Q2 2026</div>
+  <div class="modules-row">
+    <div class="panel psy">
+      <div class="corner tl"></div><div class="corner tr"></div>
+      <div class="corner bl"></div><div class="corner br"></div>
+      <div class="panel-header">
+        <div class="panel-icon">🧠</div>
+        <div><div class="panel-title">PsyCore</div></div>
+      </div>
+      <div class="badge dev">⟳ En développement</div>
+      <ul class="feat-list">
+        <li>Santé mentale · anxiété</li>
+        <li>Suivi sommeil &amp; résilience</li>
+        <li>Protocoles thérapeutiques locaux</li>
+      </ul>
+    </div>
+    <div class="panel nutri">
+      <div class="corner tl"></div><div class="corner tr"></div>
+      <div class="corner bl"></div><div class="corner br"></div>
+      <div class="panel-header">
+        <div class="panel-icon">🥗</div>
+        <div><div class="panel-title">NutriTrack</div></div>
+      </div>
+      <div class="badge dev">⟳ En développement</div>
+      <ul class="feat-list">
+        <li>Nutrition &amp; glycémie</li>
+        <li>Régimes thérapeutiques</li>
+        <li>Intégration MedicalTracker</li>
+      </ul>
+    </div>
+    <div class="panel z">
+      <div class="corner tl"></div><div class="corner tr"></div>
+      <div class="corner bl"></div><div class="corner br"></div>
+      <div class="panel-header">
+        <div class="panel-icon">🔌</div>
+        <div><div class="panel-title">API Publique Z-CORE</div></div>
+      </div>
+      <div class="badge dev">⟳ En développement</div>
+      <ul class="feat-list">
+        <li>SDK partenaires</li>
+        <li>Multi-patients</li>
+        <li>Docs publiques Q4 2026</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Z-H202 LAYERS -->
+  <div class="section-label">03 — Z-H202.ia · Moteur Agentique 6 Couches</div>
+  <div class="zh202-section">
+    <div class="zh202-layers">
+      <div class="layer-card">
+        <div class="layer-num">COUCHE 01</div>
+        <div class="layer-icon">🗄️</div>
+        <div class="layer-name">Data &amp; Knowledge</div>
+        <div class="layer-desc">Vector DB · Knowledge Graph · Corpus souverain · RAG multi-hop</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-num">COUCHE 02</div>
+        <div class="layer-icon">🤖</div>
+        <div class="layer-name">Models &amp; SLMs</div>
+        <div class="layer-desc">Claude Sonnet · Gemini 2.5 Pro · Phi-4-mini · Mistral 7B · MoE routing</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-num">COUCHE 03</div>
+        <div class="layer-icon">🔍</div>
+        <div class="layer-name">Retrieval &amp; Augmentation</div>
+        <div class="layer-desc">Contextual RAG · GraphRAG · Multi-hop · Reranking · Embeddings</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-num">COUCHE 04</div>
+        <div class="layer-icon">⚙️</div>
+        <div class="layer-name">Orchestration Agentique</div>
+        <div class="layer-desc">Omega-Generalist · Tool use · Memory · Planning · MoE dispatcher</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-num">COUCHE 05</div>
+        <div class="layer-icon">⚡</div>
+        <div class="layer-name">Serving &amp; Inference</div>
+        <div class="layer-desc">FastAPI · llama-cpp · Ollama · vLLM · Batching · Streaming</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-num">COUCHE 06</div>
+        <div class="layer-icon">👁️</div>
+        <div class="layer-name">Governance &amp; Observability</div>
+        <div class="layer-desc">EU AI Act · RGPD · Audit logs · Prometheus · Tracing · ARMED</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IA22 TUNNEL -->
+  <div class="section-label">04 — IA22_TUNNEL · Infrastructure Souveraine</div>
+  <div class="tunnel-section">
+    <div class="tunnel-flow">
+      <div class="tunnel-node">
+        <div class="tunnel-label">CLIENT</div>
+        <div class="tunnel-tech">Flutter / CLI</div>
+        <div class="tunnel-sub">Mobile · Desktop · Terminal</div>
+      </div>
+      <div class="tunnel-node">
+        <div class="tunnel-label">TUNNEL</div>
+        <div class="tunnel-tech">Ngrok / Cloudflare</div>
+        <div class="tunnel-sub">TLS 1.3 · Chiffré</div>
+      </div>
+      <div class="tunnel-node">
+        <div class="tunnel-label">GATEWAY</div>
+        <div class="tunnel-tech">FastAPI</div>
+        <div class="tunnel-sub">Auth · Rate limit · WAF</div>
+      </div>
+      <div class="tunnel-node">
+        <div class="tunnel-label">ORCHESTRATEUR</div>
+        <div class="tunnel-tech">Z-CORE v1.0</div>
+        <div class="tunnel-sub">Routing · Éthique · Memory</div>
+      </div>
+      <div class="tunnel-node">
+        <div class="tunnel-label">INFÉRENCE</div>
+        <div class="tunnel-tech">Ollama / llama-cpp</div>
+        <div class="tunnel-sub">100% Local · Offline-first</div>
+      </div>
+      <div class="tunnel-node">
+        <div class="tunnel-label">STOCKAGE</div>
+        <div class="tunnel-tech">AES-256-GCM</div>
+        <div class="tunnel-sub">JSON chiffré · 0 cloud</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROADMAP -->
+  <div class="section-label">05 — Roadmap 2026</div>
+  <div class="roadmap">
+    <div class="roadmap-item">
+      <div class="roadmap-tag tag-current">Actuel</div>
+      <div class="roadmap-q">Q1</div>
+      <div class="roadmap-date">2026 · En cours</div>
+      <ul class="roadmap-items">
+        <li>MedicalTrackerPro34</li>
+        <li>NetSecurePro module</li>
+        <li>Prompt souverain FR/EN/AR</li>
+        <li>Z-CORE orchestrateur</li>
+        <li>Architecture modulaire</li>
+      </ul>
+    </div>
+    <div class="roadmap-item">
+      <div class="roadmap-tag tag-soon">Bientôt</div>
+      <div class="roadmap-q">Q2</div>
+      <div class="roadmap-date">2026 · Avril–Juin</div>
+      <ul class="roadmap-items">
+        <li>NutriTrack</li>
+        <li>PsyCore</li>
+        <li>API publique Z-CORE</li>
+        <li>SDK partenaires</li>
+        <li>Multi-patients</li>
+      </ul>
+    </div>
+    <div class="roadmap-item">
+      <div class="roadmap-tag tag-plan">Planifié</div>
+      <div class="roadmap-q">Q3</div>
+      <div class="roadmap-date">2026 · Juil–Sept</div>
+      <ul class="roadmap-items">
+        <li>Certification HDS</li>
+        <li>Snowflake Native App</li>
+        <li>B2B cliniques</li>
+        <li>FHIR R4 complet</li>
+      </ul>
+    </div>
+    <div class="roadmap-item">
+      <div class="roadmap-tag tag-vision">Vision</div>
+      <div class="roadmap-q">Q4</div>
+      <div class="roadmap-date">2026 · Oct–Déc</div>
+      <ul class="roadmap-items">
+        <li>Core open source</li>
+        <li>Marketplace modules</li>
+        <li>Docs publiques</li>
+        <li>Partenariats recherche</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-brand">NetSecurePro IA · Z-CORE Ecosystem</div>
+    <div class="footer-meta">
+      Mohammed Ilyes Zoubirou · milyes@netsecurepro.ca · Nepean, Ontario, Canada<br/>
+      Architecture Souveraine · Zero-Trust · RGPD Art.32 · HDS · ISO27001 · 2026
+    </div>
+  </footer>
+
+</div>
+
+<script>
+// Particles
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [];
+
+function resize(){
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+for(let i=0;i<80;i++){
+  particles.push({
+    x:Math.random()*window.innerWidth,
+    y:Math.random()*window.innerHeight,
+    r:Math.random()*1.5+0.3,
+    vx:(Math.random()-0.5)*0.2,
+    vy:(Math.random()-0.5)*0.2,
+    alpha:Math.random()*0.4+0.1
+  });
+}
+
+function animParticles(){
+  ctx.clearRect(0,0,W,H);
+  particles.forEach(p=>{
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x<0)p.x=W; if(p.x>W)p.x=0;
+    if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(0,212,255,${p.alpha})`;
+    ctx.fill();
+  });
+  requestAnimationFrame(animParticles);
+}
+animParticles();
+
+// Staggered panel entrance
+document.querySelectorAll('.panel,.layer-card,.roadmap-item,.tunnel-node').forEach((el,i)=>{
+  el.style.opacity='0';
+  el.style.transform='translateY(16px)';
+  el.style.transition=`opacity 0.5s ease ${i*0.05}s, transform 0.5s ease ${i*0.05}s`;
+  setTimeout(()=>{
+    el.style.opacity='1';
+    el.style.transform='translateY(0)';
+  },200+i*50);
+});
+</script>
+</body>
+</html>

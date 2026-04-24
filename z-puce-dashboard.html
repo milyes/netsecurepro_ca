@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Z-PUCE · NetSecurePro IA · Module Souverain</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Exo+2:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:    #04060d;
+  --bg2:   #070c18;
+  --bg3:   #0b1225;
+  --bg4:   #101a35;
+  --z:     #00d4ff;
+  --z2:    #0099cc;
+  --z3:    rgba(0,212,255,0.08);
+  --z4:    rgba(0,212,255,0.15);
+  --med:   #00ffb3;
+  --sec:   #ff6b35;
+  --gold:  #ffd700;
+  --puce:  #a855f7;
+  --puce2: rgba(168,85,247,0.12);
+  --puce3: rgba(168,85,247,0.25);
+  --text:  #c8dff0;
+  --text2: #5a7a9a;
+  --text3: #1e3a5a;
+  --border:  rgba(0,212,255,0.10);
+  --border2: rgba(0,212,255,0.22);
+  --r: 8px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Exo 2',sans-serif;
+  font-size:14px;
+  line-height:1.6;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* BOOT SCREEN */
+#boot{
+  position:fixed;inset:0;
+  background:var(--bg);
+  z-index:9999;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:20px;
+}
+.boot-logo{
+  font-family:Orbitron,sans-serif;
+  font-size:clamp(24px,4vw,40px);
+  font-weight:900;
+  letter-spacing:6px;
+  color:var(--puce);
+  text-shadow:0 0 30px rgba(168,85,247,0.6);
+  animation:boot-pulse 0.8s ease-in-out infinite alternate;
+}
+.boot-sub{font-family:'DM Mono',monospace;font-size:11px;color:var(--text2);letter-spacing:3px;text-transform:uppercase;}
+.boot-bar-wrap{width:320px;height:2px;background:var(--bg3);border-radius:2px;overflow:hidden;}
+.boot-bar{height:100%;background:linear-gradient(90deg,var(--puce),var(--z));width:0;transition:width 0.15s ease;}
+#boot-msg{font-family:'DM Mono',monospace;font-size:10px;color:var(--text2);letter-spacing:2px;min-height:14px;}
+
+/* GRID OVERLAY */
+.grid-overlay{
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    linear-gradient(rgba(26,32,48,0.4) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(26,32,48,0.4) 1px, transparent 1px);
+  background-size:40px 40px;
+}
+
+/* TOPBAR */
+.topbar{
+  position:sticky;top:0;z-index:100;
+  height:56px;
+  background:rgba(4,6,13,0.92);
+  border-bottom:1px solid var(--border2);
+  backdrop-filter:blur(12px);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;
+}
+.topbar-left{display:flex;align-items:center;gap:14px;}
+.topbar-logo{
+  font-family:Orbitron,sans-serif;font-weight:900;font-size:15px;
+  letter-spacing:3px;color:var(--puce);
+  text-shadow:0 0 16px rgba(168,85,247,0.5);
+}
+.topbar-sep{width:1px;height:22px;background:var(--border2);}
+.topbar-sub{font-family:'DM Mono',monospace;font-size:9px;color:var(--text2);letter-spacing:2px;text-transform:uppercase;}
+.topbar-right{display:flex;align-items:center;gap:16px;}
+.status-badge{
+  display:flex;align-items:center;gap:6px;
+  font-family:'DM Mono',monospace;font-size:9px;
+  letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--med);padding:4px 10px;
+  border:1px solid rgba(0,255,179,0.2);border-radius:20px;
+  background:rgba(0,255,179,0.05);
+}
+.pdot{width:6px;height:6px;border-radius:50%;background:var(--med);animation:pdot 1.6s ease-in-out infinite;}
+.version-tag{
+  font-family:'DM Mono',monospace;font-size:9px;color:var(--puce);
+  letter-spacing:2px;border:1px solid var(--puce3);
+  padding:3px 8px;border-radius:4px;background:var(--puce2);
+}
+
+/* HERO */
+.hero{
+  position:relative;z-index:1;
+  padding:60px 40px 40px;
+  text-align:center;
+  border-bottom:1px solid var(--border);
+}
+.hero-chip{
+  display:inline-block;
+  font-family:'DM Mono',monospace;font-size:10px;
+  letter-spacing:3px;text-transform:uppercase;
+  color:var(--puce);border:1px solid var(--puce3);
+  padding:5px 14px;border-radius:20px;background:var(--puce2);
+  margin-bottom:20px;animation:boot-pulse 3s ease-in-out infinite alternate;
+}
+.hero-title{
+  font-family:Orbitron,sans-serif;font-weight:900;
+  font-size:clamp(32px,5vw,64px);
+  letter-spacing:8px;text-transform:uppercase;
+  color:var(--puce);
+  text-shadow:0 0 40px rgba(168,85,247,0.4),0 0 80px rgba(168,85,247,0.15);
+  margin-bottom:8px;
+}
+.hero-title span{color:var(--z);}
+.hero-desc{
+  font-family:'Exo 2',sans-serif;font-size:16px;
+  color:var(--text2);max-width:700px;margin:0 auto 30px;
+  font-weight:300;
+}
+.hero-stats{
+  display:flex;justify-content:center;gap:40px;flex-wrap:wrap;
+  margin-top:30px;
+}
+.hero-stat{text-align:center;}
+.hero-stat-val{
+  font-family:Orbitron,sans-serif;font-size:28px;font-weight:700;
+  color:var(--puce);display:block;
+}
+.hero-stat-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--text2);letter-spacing:2px;text-transform:uppercase;}
+
+/* MAIN LAYOUT */
+.main{
+  position:relative;z-index:1;
+  max-width:1400px;margin:0 auto;
+  padding:40px 24px;
+}
+.section-title{
+  font-family:Orbitron,sans-serif;font-size:11px;font-weight:600;
+  letter-spacing:4px;text-transform:uppercase;
+  color:var(--puce);margin-bottom:24px;
+  display:flex;align-items:center;gap:12px;
+}
+.section-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--puce3),transparent);}
+
+/* PANEL */
+.panel{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--r);padding:20px;position:relative;overflow:hidden;
+}
+.panel::before,.panel::after,
+.panel .br,.panel .bl{
+  content:'';position:absolute;width:12px;height:12px;
+}
+.panel::before{top:6px;left:6px;border-top:1.5px solid var(--puce);border-left:1.5px solid var(--puce);}
+.panel::after{top:6px;right:6px;border-top:1.5px solid var(--puce);border-right:1.5px solid var(--puce);}
+.panel .br{bottom:6px;right:6px;border-bottom:1.5px solid var(--puce);border-right:1.5px solid var(--puce);}
+.panel .bl{bottom:6px;left:6px;border-bottom:1.5px solid var(--puce);border-left:1.5px solid var(--puce);}
+.panel.z-panel::before,.panel.z-panel::after,.panel.z-panel .br,.panel.z-panel .bl{border-color:var(--z);}
+.panel.sec-panel::before,.panel.sec-panel::after,.panel.sec-panel .br,.panel.sec-panel .bl{border-color:var(--sec);}
+.panel.gold-panel::before,.panel.gold-panel::after,.panel.gold-panel .br,.panel.gold-panel .bl{border-color:var(--gold);}
+
+.panel-title{
+  font-family:Orbitron,sans-serif;font-size:10px;font-weight:700;
+  letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--puce);margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+.panel-title.z{color:var(--z);}
+.panel-title.sec{color:var(--sec);}
+.panel-title.gold{color:var(--gold);}
+.panel-title.med{color:var(--med);}
+.ptdot{width:5px;height:5px;border-radius:50%;}
+.ptdot.puce{background:var(--puce);}
+.ptdot.z{background:var(--z);}
+.ptdot.sec{background:var(--sec);}
+.ptdot.gold{background:var(--gold);}
+.ptdot.med{background:var(--med);}
+
+/* GRIDS */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+@media(max-width:900px){.grid2,.grid3,.grid4{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.grid2,.grid3,.grid4{grid-template-columns:1fr;}}
+
+/* SPEC ROWS */
+.spec-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);
+  font-size:13px;
+}
+.spec-row:last-child{border:none;}
+.spec-key{color:var(--text2);font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px;}
+.spec-val{color:var(--text);font-weight:500;}
+.spec-val.puce{color:var(--puce);}
+.spec-val.z{color:var(--z);}
+.spec-val.med{color:var(--med);}
+.spec-val.sec{color:var(--sec);}
+.spec-val.gold{color:var(--gold);}
+
+/* LAYER ITEMS */
+.layer-item{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:12px;border-radius:6px;
+  border:1px solid rgba(168,85,247,0.12);
+  background:var(--puce2);margin-bottom:8px;
+  transition:border-color 0.2s;
+}
+.layer-item:hover{border-color:var(--puce3);}
+.layer-num{
+  font-family:Orbitron,sans-serif;font-size:18px;font-weight:700;
+  color:var(--puce);opacity:0.6;min-width:30px;line-height:1;
+  margin-top:2px;
+}
+.layer-body{}
+.layer-name{
+  font-family:Orbitron,sans-serif;font-size:10px;font-weight:600;
+  letter-spacing:2px;text-transform:uppercase;color:var(--puce);
+  margin-bottom:4px;
+}
+.layer-desc{font-size:12px;color:var(--text2);line-height:1.5;}
+
+/* FEATURE CARDS */
+.feat-card{
+  padding:16px;border-radius:var(--r);
+  background:var(--bg3);border:1px solid var(--border);
+  transition:border-color 0.2s,transform 0.2s;
+}
+.feat-card:hover{border-color:var(--border2);transform:translateY(-2px);}
+.feat-icon{font-size:20px;margin-bottom:10px;}
+.feat-name{
+  font-family:Orbitron,sans-serif;font-size:9px;font-weight:700;
+  letter-spacing:2px;text-transform:uppercase;color:var(--z);
+  margin-bottom:6px;
+}
+.feat-desc{font-size:12px;color:var(--text2);line-height:1.5;}
+
+/* MODULE INTEGRATION TABLE */
+.int-table{width:100%;border-collapse:collapse;}
+.int-table th{
+  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--text2);
+  text-align:left;padding:8px 12px;
+  border-bottom:1px solid var(--border2);
+}
+.int-table td{
+  padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.04);
+  font-size:12px;vertical-align:middle;
+}
+.int-table tr:last-child td{border:none;}
+.int-table tr:hover td{background:var(--bg4);}
+.badge{
+  display:inline-block;font-family:'DM Mono',monospace;
+  font-size:9px;letter-spacing:1px;text-transform:uppercase;
+  padding:2px 8px;border-radius:3px;font-weight:500;
+}
+.badge.puce{background:var(--puce2);color:var(--puce);border:1px solid var(--puce3);}
+.badge.z{background:var(--z3);color:var(--z);border:1px solid var(--z4);}
+.badge.med{background:rgba(0,255,179,0.1);color:var(--med);border:1px solid rgba(0,255,179,0.2);}
+.badge.sec{background:rgba(255,107,53,0.1);color:var(--sec);border:1px solid rgba(255,107,53,0.2);}
+.badge.gold{background:rgba(255,215,0,0.1);color:var(--gold);border:1px solid rgba(255,215,0,0.2);}
+.badge.ok{background:rgba(0,255,179,0.1);color:var(--med);}
+
+/* ROADMAP */
+.roadmap-item{
+  display:flex;gap:16px;padding:14px 0;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+}
+.roadmap-item:last-child{border:none;}
+.rm-phase{
+  min-width:70px;font-family:Orbitron,sans-serif;font-size:9px;
+  font-weight:700;letter-spacing:2px;text-transform:uppercase;
+}
+.rm-content{}
+.rm-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.rm-items{font-size:11px;color:var(--text2);}
+
+/* CODE BLOCK */
+.code-block{
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:6px;padding:16px;
+  font-family:'DM Mono',monospace;font-size:11px;
+  color:var(--text2);line-height:1.7;overflow-x:auto;
+  white-space:pre;
+}
+.code-block .k{color:var(--puce);}
+.code-block .s{color:var(--med);}
+.code-block .c{color:var(--text3);}
+.code-block .n{color:var(--z);}
+
+/* SVG ARCH */
+.arch-wrap{
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--r);overflow:hidden;
+}
+
+/* SECURITY METRICS */
+.metric-row{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);
+}
+.metric-row:last-child{border:none;}
+.metric-label{flex:1;font-size:12px;color:var(--text2);}
+.metric-bar-wrap{flex:2;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;}
+.metric-bar{height:100%;border-radius:2px;transition:width 1s ease;}
+.metric-val{min-width:40px;text-align:right;font-family:'DM Mono',monospace;font-size:11px;color:var(--puce);}
+
+/* FOOTER */
+.footer{
+  position:relative;z-index:1;
+  border-top:1px solid var(--border2);
+  background:#060810;
+  padding:16px 40px;
+  display:flex;justify-content:space-between;align-items:center;
+  font-family:'DM Mono',monospace;font-size:9px;
+  letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--text2);
+  flex-wrap:wrap;gap:8px;
+}
+.footer-center{color:var(--text);font-weight:500;}
+
+/* ANIMATIONS */
+@keyframes boot-pulse{from{opacity:0.6;}to{opacity:1;}}
+@keyframes pdot{0%,100%{opacity:1;box-shadow:0 0 4px currentColor;}50%{opacity:0.4;box-shadow:none;}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+@keyframes spin-slow{from{transform:rotate(0deg);}to{transform:rotate(360deg);}  }
+
+.fade-in{animation:fadeIn 0.5s ease forwards;opacity:0;}
+
+/* NAV TABS */
+.nav-tabs{
+  display:flex;gap:4px;margin-bottom:28px;flex-wrap:wrap;
+  border-bottom:1px solid var(--border);padding-bottom:0;
+}
+.nav-tab{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;
+  text-transform:uppercase;padding:8px 16px;cursor:pointer;
+  color:var(--text2);border-bottom:2px solid transparent;
+  transition:all 0.2s;background:none;border-top:none;border-left:none;border-right:none;
+  margin-bottom:-1px;
+}
+.nav-tab:hover{color:var(--puce);}
+.nav-tab.active{color:var(--puce);border-bottom-color:var(--puce);}
+
+/* SECTION */
+.tab-section{display:none;}
+.tab-section.active{display:block;animation:fadeIn 0.4s ease;}
+
+/* DIVIDER */
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border2),transparent);margin:28px 0;}
+</style>
+</head>
+<body>
+
+<!-- BOOT -->
+<div id="boot">
+  <div class="boot-logo">Z-PUCE</div>
+  <div class="boot-sub">NetSecurePro IA · Module Souverain</div>
+  <div class="boot-bar-wrap"><div class="boot-bar" id="bbar"></div></div>
+  <div id="boot-msg">INIT...</div>
+</div>
+
+<!-- GRID -->
+<div class="grid-overlay"></div>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-logo">Z-PUCE</div>
+    <div class="topbar-sep"></div>
+    <div class="topbar-sub">NetSecurePro IA · Processeur IA Souverain</div>
+  </div>
+  <div class="topbar-right">
+    <div class="status-badge"><span class="pdot"></span>OPÉRATIONNEL</div>
+    <div class="version-tag">v1.0</div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-chip">MODULE SOUVERAIN · Z-CORE ECOSYSTEM</div>
+  <div class="hero-title">Z-<span>PUCE</span></div>
+  <div class="hero-desc">Processeur IA Souverain Embarqué — Inférence locale, chiffrement matériel, orchestration zero-trust pour l'infrastructure NetSecurePro IA.</div>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <span class="hero-stat-val">100%</span>
+      <span class="hero-stat-lbl">Local</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-val">AES-256</span>
+      <span class="hero-stat-lbl">Chiffrement</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-val">6</span>
+      <span class="hero-stat-lbl">Couches IA</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-val">&lt;50ms</span>
+      <span class="hero-stat-lbl">Latence inférence</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-val">0</span>
+      <span class="hero-stat-lbl">Exfiltration</span>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- NAV TABS -->
+  <nav class="nav-tabs">
+    <button class="nav-tab active" onclick="showTab('overview')">Vue d'ensemble</button>
+    <button class="nav-tab" onclick="showTab('architecture')">Architecture</button>
+    <button class="nav-tab" onclick="showTab('specs')">Spécifications</button>
+    <button class="nav-tab" onclick="showTab('securite')">Sécurité</button>
+    <button class="nav-tab" onclick="showTab('integration')">Intégration</button>
+    <button class="nav-tab" onclick="showTab('roadmap')">Roadmap</button>
+  </nav>
+
+  <!-- ===== TAB: OVERVIEW ===== -->
+  <div id="tab-overview" class="tab-section active">
+
+    <div class="section-title">Identité du module</div>
+    <div class="grid2" style="margin-bottom:24px;">
+      <div class="panel">
+        <div class="br"></div><div class="bl"></div>
+        <div class="panel-title"><span class="ptdot puce"></span>Définition</div>
+        <p style="font-size:13px;color:var(--text2);line-height:1.7;">
+          <strong style="color:var(--puce)">Z-PUCE</strong> est le moteur d'inférence IA embarqué de <strong style="color:var(--sec)">NetSecurePro IA</strong>. Il agit comme le <em>cerveau local</em> de l'écosystème Z-CORE : chaque décision de sécurité, chaque analyse d'anomalie, chaque réponse agentic passe par Z-PUCE sans jamais quitter l'infrastructure souveraine.
+        </p>
+        <div class="divider" style="margin:12px 0;"></div>
+        <div class="spec-row">
+          <span class="spec-key">Namespace</span>
+          <span class="spec-val puce">z-core/zpuce</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-key">Module parent</span>
+          <span class="spec-val sec">NetSecurePro IA</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-key">Type</span>
+          <span class="spec-val z">Processeur IA embarqué</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-key">Version</span>
+          <span class="spec-val puce">v1.0 · 2026</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-key">Auteur</span>
+          <span class="spec-val">Mohammed Ilyes Zoubirou</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="br"></div><div class="bl"></div>
+        <div class="panel-title"><span class="ptdot puce"></span>Principes Fondateurs</div>
+        <div class="layer-item">
+          <div class="layer-num">01</div>
+          <div class="layer-body">
+            <div class="layer-name">Souveraineté absolue</div>
+            <div class="layer-desc">Aucune donnée traitée ne quitte l'infrastructure. Inférence 100% locale via Ollama / llama-cpp.</div>
+          </div>
+        </div>
+        <div class="layer-item">
+          <div class="layer-num">02</div>
+          <div class="layer-body">
+            <div class="layer-name">Zero-Trust natif</div>
+            <div class="layer-desc">Chaque appel intermodule est authentifié JWT + validé signature. Aucune confiance implicite.</div>
+          </div>
+        </div>
+        <div class="layer-item">
+          <div class="layer-num">03</div>
+          <div class="layer-body">
+            <div class="layer-name">Intelligence embarquée</div>
+            <div class="layer-desc">Routing MoE local, mémoire vectorielle chiffrée, détection d'anomalies temps-réel sans cloud.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">Capacités principales</div>
+    <div class="grid4" style="margin-bottom:24px;">
+      <div class="feat-card">
+        <div class="feat-icon">🧠</div>
+        <div class="feat-name">Inférence Locale</div>
+        <div class="feat-desc">Exécution de LLM quantisés (Qwen2.5, DeepSeek-Coder) via Ollama/llama-cpp. Latence &lt;50ms.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔐</div>
+        <div class="feat-name">Crypto Matérielle</div>
+        <div class="feat-desc">AES-256-GCM pour mémoire, TLS 1.3/mTLS pour transport, Fernet pour vecteurs ChromaDB.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">⚡</div>
+        <div class="feat-name">Routing MoE</div>
+        <div class="feat-desc">Mixture-of-Experts local : active uniquement l'expert pertinent selon le contexte sécurité/analyse.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🕵️</div>
+        <div class="feat-name">Détection Anomalies</div>
+        <div class="feat-desc">Pipeline Isolation Forest + LSTM-AE + XGBoost. PCI-DSS compliant, audit SHA-256.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📡</div>
+        <div class="feat-name">RAG Souverain</div>
+        <div class="feat-desc">ChromaDB chiffré + BAAI/bge-m3 embeddings. Contexte CVE et politiques de sécurité.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔭</div>
+        <div class="feat-name">Observabilité</div>
+        <div class="feat-desc">OpenTelemetry + Jaeger + Prometheus/Grafana. Traces distribuées sur tous les agents.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🛡️</div>
+        <div class="feat-name">Sandboxing</div>
+        <div class="feat-desc">Isolation bubblewrap par agent. Podman rootless. Aucun accès root en production.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📊</div>
+        <div class="feat-name">Gouvernance</div>
+        <div class="feat-desc">RGPD Art.32 · ISO 27001 · PIPEDA · EU AI Act. Audit trail immuable par opération.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== TAB: ARCHITECTURE ===== -->
+  <div id="tab-architecture" class="tab-section">
+    <div class="section-title">Architecture Z-PUCE — 6 couches</div>
+
+    <div class="arch-wrap" style="margin-bottom:24px;">
+      <svg viewBox="0 0 780 520" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;background:#04060d;">
+        <defs>
+          <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#a855f7" opacity="0.7"/>
+          </marker>
+          <marker id="arrz" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#00d4ff" opacity="0.7"/>
+          </marker>
+          <marker id="arrs" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#ff6b35" opacity="0.7"/>
+          </marker>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <!-- GRID -->
+        <line x1="0" y1="40" x2="780" y2="40" stroke="#1a2030" stroke-width="0.5" opacity="0.5"/>
+        <line x1="0" y1="480" x2="780" y2="480" stroke="#1a2030" stroke-width="0.5" opacity="0.5"/>
+        <line x1="30" y1="0" x2="30" y2="520" stroke="#1a2030" stroke-width="0.5" opacity="0.3"/>
+        <line x1="750" y1="0" x2="750" y2="520" stroke="#1a2030" stroke-width="0.5" opacity="0.3"/>
+
+        <!-- TITLE BAR -->
+        <rect x="0" y="0" width="780" height="40" fill="#060810"/>
+        <text x="20" y="26" font-family="Orbitron,sans-serif" font-size="11" font-weight="700" fill="#a855f7" letter-spacing="3">Z-PUCE · ARCHITECTURE SOUVERAINE</text>
+        <text x="620" y="26" font-family="DM Mono,monospace" font-size="9" fill="#5a7a9a" letter-spacing="1">NETSECUREPRO IA · v1.0</text>
+
+        <!-- === LEFT: Z-CORE INPUT === -->
+        <rect x="20" y="55" width="120" height="50" rx="6" fill="#0b1225" stroke="#00d4ff" stroke-width="1" opacity="0.8"/>
+        <!-- corners -->
+        <path d="M20 65 L20 55 L30 55" fill="none" stroke="#00d4ff" stroke-width="1.5"/>
+        <path d="M130 65 L130 55 L120 55" fill="none" stroke="#00d4ff" stroke-width="1.5"/>
+        <path d="M20 95 L20 105 L30 105" fill="none" stroke="#00d4ff" stroke-width="1.5"/>
+        <path d="M130 95 L130 105 L120 105" fill="none" stroke="#00d4ff" stroke-width="1.5"/>
+        <text x="80" y="76" font-family="DM Mono,monospace" font-size="9" fill="#00d4ff" text-anchor="middle" letter-spacing="1">Z-CORE</text>
+        <text x="80" y="90" font-family="DM Mono,monospace" font-size="8" fill="#5a7a9a" text-anchor="middle">Orchestrateur</text>
+        <line x1="140" y1="80" x2="175" y2="80" stroke="#00d4ff" stroke-width="1.5" opacity="0.7" marker-end="url(#arrz)"/>
+
+        <!-- === LEFT: IA22_TUNNEL === -->
+        <rect x="20" y="125" width="120" height="50" rx="6" fill="#0b1225" stroke="#ff6b35" stroke-width="1" opacity="0.8"/>
+        <path d="M20 135 L20 125 L30 125" fill="none" stroke="#ff6b35" stroke-width="1.5"/>
+        <path d="M130 135 L130 125 L120 125" fill="none" stroke="#ff6b35" stroke-width="1.5"/>
+        <path d="M20 165 L20 175 L30 175" fill="none" stroke="#ff6b35" stroke-width="1.5"/>
+        <path d="M130 165 L130 175 L120 175" fill="none" stroke="#ff6b35" stroke-width="1.5"/>
+        <text x="80" y="146" font-family="DM Mono,monospace" font-size="9" fill="#ff6b35" text-anchor="middle" letter-spacing="1">IA22_TUNNEL</text>
+        <text x="80" y="160" font-family="DM Mono,monospace" font-size="8" fill="#5a7a9a" text-anchor="middle">JWT · TLS 1.3</text>
+        <line x1="140" y1="150" x2="175" y2="150" stroke="#ff6b35" stroke-width="1.5" opacity="0.7" marker-end="url(#arrs)"/>
+
+        <!-- === CENTRAL Z-PUCE BOX === -->
+        <rect x="180" y="50" width="420" height="420" rx="10" fill="#08091a" stroke="#a855f7" stroke-width="1.5"/>
+        <!-- corner brackets -->
+        <path d="M180 70 L180 50 L200 50" fill="none" stroke="#a855f7" stroke-width="2"/>
+        <path d="M580 70 L580 50 L560 50" fill="none" stroke="#a855f7" stroke-width="2"/>
+        <path d="M180 450 L180 470 L200 470" fill="none" stroke="#a855f7" stroke-width="2"/>
+        <path d="M580 450 L580 470 L560 470" fill="none" stroke="#a855f7" stroke-width="2"/>
+        <text x="390" y="72" font-family="Orbitron,sans-serif" font-size="13" font-weight="900" fill="#a855f7" text-anchor="middle" letter-spacing="4" filter="url(#glow)">Z-PUCE</text>
+        <text x="390" y="86" font-family="DM Mono,monospace" font-size="8" fill="#5a7a9a" text-anchor="middle" letter-spacing="2">PROCESSEUR IA SOUVERAIN EMBARQUÉ</text>
+
+        <!-- Layer 1: INPUT GATE -->
+        <rect x="195" y="95" width="390" height="44" rx="5" fill="#0b1225" stroke="rgba(168,85,247,0.3)" stroke-width="1"/>
+        <text x="210" y="112" font-family="DM Mono,monospace" font-size="8" fill="#a855f7" letter-spacing="1.5">COUCHE 1</text>
+        <text x="210" y="127" font-family="DM Mono,monospace" font-size="9" fill="#c8dff0" font-weight="600" letter-spacing="1">INPUT GATE — Validation JWT + Sanitisation</text>
+        <rect x="500" y="100" width="78" height="16" rx="3" fill="rgba(0,255,179,0.1)" stroke="rgba(0,255,179,0.2)" stroke-width="0.5"/>
+        <text x="539" y="112" font-family="DM Mono,monospace" font-size="7" fill="#00ffb3" text-anchor="middle">HMAC-SHA256</text>
+
+        <!-- Layer 2: MoE ROUTER -->
+        <rect x="195" y="148" width="390" height="56" rx="5" fill="#0d1025" stroke="rgba(168,85,247,0.35)" stroke-width="1"/>
+        <text x="210" y="163" font-family="DM Mono,monospace" font-size="8" fill="#a855f7" letter-spacing="1.5">COUCHE 2</text>
+        <text x="210" y="178" font-family="DM Mono,monospace" font-size="9" fill="#c8dff0" font-weight="600" letter-spacing="1">MoE ROUTER — Routing Intelligent Multi-Expert</text>
+        <!-- mini expert blocks -->
+        <rect x="210" y="183" width="50" height="14" rx="2" fill="rgba(0,212,255,0.1)" stroke="rgba(0,212,255,0.2)" stroke-width="0.5"/>
+        <text x="235" y="193" font-family="DM Mono,monospace" font-size="6.5" fill="#00d4ff" text-anchor="middle">CVE-EXPERT</text>
+        <rect x="268" y="183" width="55" height="14" rx="2" fill="rgba(255,107,53,0.1)" stroke="rgba(255,107,53,0.2)" stroke-width="0.5"/>
+        <text x="296" y="193" font-family="DM Mono,monospace" font-size="6.5" fill="#ff6b35" text-anchor="middle">NET-EXPERT</text>
+        <rect x="331" y="183" width="55" height="14" rx="2" fill="rgba(168,85,247,0.1)" stroke="rgba(168,85,247,0.2)" stroke-width="0.5"/>
+        <text x="359" y="193" font-family="DM Mono,monospace" font-size="6.5" fill="#a855f7" text-anchor="middle">ANOMALY-EXP</text>
+        <rect x="394" y="183" width="55" height="14" rx="2" fill="rgba(255,215,0,0.1)" stroke="rgba(255,215,0,0.2)" stroke-width="0.5"/>
+        <text x="422" y="193" font-family="DM Mono,monospace" font-size="6.5" fill="#ffd700" text-anchor="middle">AUDIT-EXPERT</text>
+        <rect x="457" y="183" width="55" height="14" rx="2" fill="rgba(0,255,179,0.1)" stroke="rgba(0,255,179,0.2)" stroke-width="0.5"/>
+        <text x="485" y="193" font-family="DM Mono,monospace" font-size="6.5" fill="#00ffb3" text-anchor="middle">CODE-EXPERT</text>
+
+        <!-- Layer 3: INFERENCE ENGINE -->
+        <rect x="195" y="213" width="390" height="56" rx="5" fill="#0b1225" stroke="rgba(168,85,247,0.4)" stroke-width="1"/>
+        <text x="210" y="228" font-family="DM Mono,monospace" font-size="8" fill="#a855f7" letter-spacing="1.5">COUCHE 3</text>
+        <text x="210" y="243" font-family="DM Mono,monospace" font-size="9" fill="#c8dff0" font-weight="600" letter-spacing="1">INFERENCE ENGINE — Ollama · llama-cpp · GGUF</text>
+        <text x="210" y="259" font-family="DM Mono,monospace" font-size="7.5" fill="#5a7a9a">Qwen2.5-3B · Qwen2.5-14B · DeepSeek-Coder-V2:16b · BioMistral-7B · Gemma3-4B</text>
+
+        <!-- Layer 4: RAG SOUVERAIN -->
+        <rect x="195" y="278" width="390" height="56" rx="5" fill="#0d1025" stroke="rgba(168,85,247,0.4)" stroke-width="1"/>
+        <text x="210" y="293" font-family="DM Mono,monospace" font-size="8" fill="#a855f7" letter-spacing="1.5">COUCHE 4</text>
+        <text x="210" y="308" font-family="DM Mono,monospace" font-size="9" fill="#c8dff0" font-weight="600" letter-spacing="1">RAG SOUVERAIN — ChromaDB · BAAI/bge-m3</text>
+        <text x="210" y="324" font-family="DM Mono,monospace" font-size="7.5" fill="#5a7a9a">Fernet-encrypted vectors · BM25 hybrid · RRF reranker · CVE base locale</text>
+
+        <!-- Layer 5: MEMORY -->
+        <rect x="195" y="343" width="390" height="44" rx="5" fill="#0b1225" stroke="rgba(168,85,247,0.35)" stroke-width="1"/>
+        <text x="210" y="358" font-family="DM Mono,monospace" font-size="8" fill="#a855f7" letter-spacing="1.5">COUCHE 5</text>
+        <text x="210" y="374" font-family="DM Mono,monospace" font-size="9" fill="#c8dff0" font-weight="600" letter-spacing="1">MÉMOIRE AGENTIQUE — STM · LTM · Vectorielle · Épisodique</text>
+
+        <!-- Layer 6: OUTPUT GOVERNANCE -->
+        <rect x="195" y="396" width="390" height="44" rx="5" fill="#0b1225" stroke="rgba(168,85,247,0.5)" stroke-width="1.5"/>
+        <text x="210" y="411" font-family="DM Mono,monospace" font-size="8" fill="#a855f7" letter-spacing="1.5">COUCHE 6</text>
+        <text x="210" y="427" font-family="DM Mono,monospace" font-size="9" fill="#c8dff0" font-weight="600" letter-spacing="1">GOUVERNANCE OUTPUT — ARMED · Compliance · Audit AES-256</text>
+
+        <!-- ARROWS between layers -->
+        <line x1="390" y1="139" x2="390" y2="148" stroke="#a855f7" stroke-width="1.5" opacity="0.5" marker-end="url(#arr)"/>
+        <line x1="390" y1="204" x2="390" y2="213" stroke="#a855f7" stroke-width="1.5" opacity="0.5" marker-end="url(#arr)"/>
+        <line x1="390" y1="269" x2="390" y2="278" stroke="#a855f7" stroke-width="1.5" opacity="0.5" marker-end="url(#arr)"/>
+        <line x1="390" y1="334" x2="390" y2="343" stroke="#a855f7" stroke-width="1.5" opacity="0.5" marker-end="url(#arr)"/>
+        <line x1="390" y1="387" x2="390" y2="396" stroke="#a855f7" stroke-width="1.5" opacity="0.5" marker-end="url(#arr)"/>
+
+        <!-- Vertical flow label left -->
+        <text x="190" y="270" font-family="DM Mono,monospace" font-size="8" fill="#a855f7" opacity="0.4" transform="rotate(-90,190,270)" text-anchor="middle" letter-spacing="2">PIPELINE SOUVERAIN</text>
+
+        <!-- STATUS DOTS -->
+        <circle cx="510" y="459" cy="460" r="4" fill="#00ffb3"/>
+        <circle cx="526" cy="460" r="4" fill="#00d4ff"/>
+        <circle cx="542" cy="460" r="4" fill="#ff6b35"/>
+        <circle cx="558" cy="460" r="4" fill="#a855f7"/>
+        <text x="510" y="474" font-family="DM Mono,monospace" font-size="7" fill="#5a7a9a" text-anchor="middle">MED</text>
+        <text x="526" y="474" font-family="DM Mono,monospace" font-size="7" fill="#5a7a9a" text-anchor="middle">CORE</text>
+        <text x="542" y="474" font-family="DM Mono,monospace" font-size="7" fill="#5a7a9a" text-anchor="middle">SEC</text>
+        <text x="558" y="474" font-family="DM Mono,monospace" font-size="7" fill="#5a7a9a" text-anchor="middle">PUCE</text>
+
+      <!-- === RIGHT: OUTPUTS === -->
+        <!-- Netsec Output -->
+        <line x1="600" y1="200" x2="635" y2="200" stroke="#ff6b35" stroke-width="1.5" opacity="0.7" marker-end="url(#arrs)"/>
+        <rect x="638" y="178" width="124" height="44" rx="5" fill="#0b1225" stroke="#ff6b35" stroke-width="1" opacity="0.8"/>
+        <path d="M638 188 L638 178 L648 178" fill="none" stroke="#ff6b35" stroke-width="1.5"/>
+        <path d="M762 188 L762 178 L752 178" fill="none" stroke="#ff6b35" stroke-width="1.5"/>
+        <path d="M638 212 L638 222 L648 222" fill="none" stroke="#ff6b35" stroke-width="1.5"/>
+        <path d="M762 212 L762 222 L752 222" fill="none" stroke="#ff6b35" stroke-width="1.5"/>
+        <text x="700" y="196" font-family="DM Mono,monospace" font-size="8.5" fill="#ff6b35" text-anchor="middle" letter-spacing="1">NETSECURE</text>
+        <text x="700" y="211" font-family="DM Mono,monospace" font-size="7.5" fill="#5a7a9a" text-anchor="middle">WAF · IDS · CVE</text>
+
+        <!-- Vault Output -->
+        <line x1="600" y1="310" x2="635" y2="310" stroke="#ffd700" stroke-width="1.5" opacity="0.7"/>
+        <rect x="638" y="289" width="124" height="44" rx="5" fill="#0b1225" stroke="#ffd700" stroke-width="1" opacity="0.8"/>
+        <path d="M638 299 L638 289 L648 289" fill="none" stroke="#ffd700" stroke-width="1.5"/>
+        <path d="M762 299 L762 289 L752 289" fill="none" stroke="#ffd700" stroke-width="1.5"/>
+        <path d="M638 323 L638 333 L648 333" fill="none" stroke="#ffd700" stroke-width="1.5"/>
+        <path d="M762 323 L762 333 L752 333" fill="none" stroke="#ffd700" stroke-width="1.5"/>
+        <text x="700" y="306" font-family="DM Mono,monospace" font-size="8.5" fill="#ffd700" text-anchor="middle" letter-spacing="1">VAULT / OBS.</text>
+        <text x="700" y="321" font-family="DM Mono,monospace" font-size="7.5" fill="#5a7a9a" text-anchor="middle">HashiCorp · Jaeger</text>
+
+        <!-- FOOTER -->
+        <rect x="0" y="480" width="780" height="40" fill="#060810"/>
+        <text x="20" y="505" font-family="DM Mono,monospace" font-size="8" fill="#5a7a9a" letter-spacing="1">NETSECUREPRO IA</text>
+        <text x="390" y="505" font-family="DM Mono,monospace" font-size="8" fill="#c8dff0" text-anchor="middle" letter-spacing="1">MOHAMMED ILYES ZOUBIROU</text>
+        <text x="760" y="505" font-family="DM Mono,monospace" font-size="8" fill="#5a7a9a" text-anchor="end" letter-spacing="1">Z-PUCE · v1.0</text>
+      </svg>
+    </div>
+
+    <div class="section-title">Couches détaillées</div>
+    <div class="grid2">
+      <div>
+        <div class="layer-item">
+          <div class="layer-num">1</div>
+          <div class="layer-body">
+            <div class="layer-name">Input Gate</div>
+            <div class="layer-desc">Validation JWT RS256, sanitisation des entrées, rate limiting per-session, détection injection prompt (PromptGuard local). Tout payload non signé est rejeté avant d'atteindre l'inference engine.</div>
+          </div>
+        </div>
+        <div class="layer-item">
+          <div class="layer-num">2</div>
+          <div class="layer-body">
+            <div class="layer-name">MoE Router</div>
+            <div class="layer-desc">Routing intelligent vers l'expert optimal : CVE-Expert (vulnérabilités), Net-Expert (topologie réseau), Anomaly-Expert (détection comportementale), Audit-Expert (conformité), Code-Expert (analyse code malveillant).</div>
+          </div>
+        </div>
+        <div class="layer-item">
+          <div class="layer-num">3</div>
+          <div class="layer-body">
+            <div class="layer-name">Inference Engine</div>
+            <div class="layer-desc">Ollama + llama-cpp en mode GGUF quantisé. Stack modèles : Qwen2.5-3B (rapide), Qwen2.5-14B (profond), DeepSeek-Coder-V2:16b (code), BioMistral-7B (médical cross-module), Gemma3-4B (général).</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="layer-item">
+          <div class="layer-num">4</div>
+          <div class="layer-body">
+            <div class="layer-name">RAG Souverain</div>
+            <div class="layer-desc">ChromaDB local chiffré Fernet. Embeddings BAAI/bge-m3 multilingues. Hybrid retrieval BM25 + sémantique + RRF + cross-encoder reranker. Base CVE/NVD synchronisée localement.</div>
+          </div>
+        </div>
+        <div class="layer-item">
+          <div class="layer-num">5</div>
+          <div class="layer-body">
+            <div class="layer-name">Mémoire Agentique</div>
+            <div class="layer-desc">4 couches mémoire : STM (contexte session Redis), LTM (incidents historiques SQLite), Vectorielle (patterns attaques), Épisodique (séquences temporelles). Rétention 90j glissants, AES-256-GCM.</div>
+          </div>
+        </div>
+        <div class="layer-item">
+          <div class="layer-num">6</div>
+          <div class="layer-body">
+            <div class="layer-name">Gouvernance Output</div>
+            <div class="layer-desc">ARMED ethics enforcement : Accountability, Responsibility, Minimal-data, Explainability, Defense-in-depth. Audit trail SHA-256 chaîné. Compliance checker RGPD/ISO27001/PIPEDA avant chaque réponse.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TAB: SPECS ===== -->
+  <div id="tab-specs" class="tab-section">
+    <div class="section-title">Spécifications techniques</div>
+    <div class="grid2" style="margin-bottom:24px;">
+      <div class="panel">
+        <div class="br"></div><div class="bl"></div>
+        <div class="panel-title"><span class="ptdot puce"></span>Moteur d'inférence</div>
+        <div class="spec-row"><span class="spec-key">Runtime primaire</span><span class="spec-val z">Ollama v0.6+</span></div>
+        <div class="spec-row"><span class="spec-key">Runtime secondaire</span><span class="spec-val z">llama-cpp-python</span></div>
+        <div class="spec-row"><span class="spec-key">Format modèles</span><span class="spec-val">GGUF Q4_K_M / Q8_0</span></div>
+        <div class="spec-row"><span class="spec-key">Latence cible</span><span class="spec-val med">&lt;50ms (3B) · &lt;200ms (14B)</span></div>
+        <div class="spec-row"><span class="spec-key">Concurrence</span><span class="spec-val">8 sessions parallèles</span></div>
+        <div class="spec-row"><span class="spec-key">Context window</span><span class="spec-val">32K tokens</span></div>
+        <div class="spec-row"><span class="spec-key">GPU support</span><span class="spec-val">CUDA 12 · ROCm · CPU fallback</span></div>
+      </div>
+      <div class="panel">
+        <div class="br"></div><div class="bl"></div>
+        <div class="panel-title"><span class="ptdot z"></span>Stack modèles</div>
+        <div class="spec-row"><span class="spec-key">Général rapide</span><span class="spec-val z">Qwen2.5-3B-Instruct-Q4</span></div>
+        <div class="spec-row"><span class="spec-key">Général profond</span><span class="spec-val z">Qwen2.5-14B-Instruct-Q4</span></div>
+        <div class="spec-row"><span class="spec-key">Code/CVE</span><span class="spec-val puce">DeepSeek-Coder-V2:16b</span></div>
+        <div class="spec-row"><span class="spec-key">Bio/Médical</span><span class="spec-val med">BioMistral-7B-Q4</span></div>
+        <div class="spec-row"><span class="spec-key">Polyvalent</span><span class="spec-val">Gemma3-4B-IT-Q8</span></div>
+        <div class="spec-row"><span class="spec-key">Embeddings</span><span class="spec-val gold">BAAI/bge-m3 (multilingual)</span></div>
+        <div class="spec-row"><span class="spec-key">Reranker</span><span class="spec-val">cross-encoder/ms-marco-MiniLM</span></div>
+      </div>
+      <div class="panel">
+        <div class="br"></div><div class="bl"></div>
+        <div class="panel-title sec"><span class="ptdot sec"></span>Infrastructure requise</div>
+        <div class="spec-row"><span class="spec-key">OS</span><span class="spec-val">Debian 12 / Ubuntu 24.04</span></div>
+        <div class="spec-row"><span class="spec-key">CPU min.</span><span class="spec-val">8 vCPU (ARM64/x86-64)</span></div>
+        <div class="spec-row"><span class="spec-key">RAM min.</span><span class="spec-val">32 GB DDR5</span></div>
+        <div class="spec-row"><span class="spec-key">Storage</span><span class="spec-val">NVMe 500 GB+</span></div>
+        <div class="spec-row"><span class="spec-key">Réseau</span><span class="spec-val">Isolé VLAN · WireGuard mesh</span></div>
+        <div class="spec-row"><span class="spec-key">Conteneurisation</span><span class="spec-val">Podman rootless</span></div>
+        <div class="spec-row"><span class="spec-key">Secrets</span><span class="spec-val">HashiCorp Vault</span></div>
+      </div>
+      <div class="panel">
+        <div class="br"></div><div class="bl"></div>
+        <div class="panel-title gold"><span class="ptdot gold"></span>Stockage & Mémoire</div>
+        <div class="spec-row"><span class="spec-key">Vector DB</span><span class="spec-val z">ChromaDB (Fernet-encrypted)</span></div>
+        <div class="spec-row"><span class="spec-key">Cache STM</span><span class="spec-val">Redis 7 · TTL 3600s</span></div>
+        <div class="spec-row"><span class="spec-key">LTM</span><span class="spec-val">PostgreSQL 16 WAL</span></div>
+        <div class="spec-row"><span class="spec-key">Audit log</span><span class="spec-val">SQLite WAL + SHA-256 chain</span></div>
+        <div class="spec-row"><span class="spec-key">Rétention</span><span class="spec-val">90 jours glissants</span></div>
+        <div class="spec-row"><span class="spec-key">Backup</span><span class="spec-val">Chiffré AES-256 · S3 privé</span></div>
+        <div class="spec-row"><span class="spec-key">RGPD purge</span><span class="spec-val med">API DELETE conforme Art.17</span></div>
+      </div>
+    </div>
+
+    <div class="section-title">API Z-PUCE</div>
+    <div class="panel" style="margin-bottom:16px;">
+      <div class="br"></div><div class="bl"></div>
+      <div class="panel-title"><span class="ptdot puce"></span>Endpoints principaux</div>
+      <div class="code-block"><span class="c"># Z-PUCE FastAPI — Endpoints souverains</span>
+
+<span class="k">POST</span>  <span class="n">/zpuce/v1/inference</span>     <span class="c"># Inférence directe avec MoE routing</span>
+<span class="k">POST</span>  <span class="n">/zpuce/v1/scan/cve</span>       <span class="c"># Analyse CVE/NVD avec RAG local</span>
+<span class="k">POST</span>  <span class="n">/zpuce/v1/scan/network</span>   <span class="c"># Analyse topologie réseau (Nmap wrapper)</span>
+<span class="k">POST</span>  <span class="n">/zpuce/v1/anomaly</span>        <span class="c"># Détection anomalies (pipeline ML)</span>
+<span class="k">GET</span>   <span class="n">/zpuce/v1/memory/{session}</span> <span class="c"># Lecture mémoire agentique (chiffrée)</span>
+<span class="k">DELETE</span> <span class="n">/zpuce/v1/memory/{session}</span> <span class="c"># Purge RGPD Art.17</span>
+<span class="k">GET</span>   <span class="n">/zpuce/v1/audit/trail</span>    <span class="c"># Audit log SHA-256 chaîné</span>
+<span class="k">GET</span>   <span class="n">/zpuce/v1/health</span>         <span class="c"># Statut modules + métriques</span>
+<span class="k">GET</span>   <span class="n">/zpuce/v1/metrics</span>        <span class="c"># Prometheus scraping endpoint</span></div>
+    </div>
+
+    <div class="panel">
+      <div class="br"></div><div class="bl"></div>
+      <div class="panel-title"><span class="ptdot z"></span>Payload exemple — Inférence sécurité</div>
+      <div class="code-block"><span class="c"># Request</span>
+{
+  <span class="s">"session_id"</span>: <span class="s">"sess_abc123"</span>,
+  <span class="s">"query"</span>: <span class="s">"Analyser CVE-2024-3094 impact sur notre stack"</span>,
+  <span class="s">"context"</span>: { <span class="s">"module"</span>: <span class="s">"netsecure"</span>, <span class="s">"priority"</span>: <span class="s">"HIGH"</span> },
+  <span class="s">"routing_hint"</span>: <span class="s">"cve_expert"</span>  <span class="c"># optionnel</span>
+}
+
+<span class="c"># Response Z-PUCE</span>
+{
+  <span class="s">"source"</span>: <span class="s">"zpuce/cve_expert"</span>,
+  <span class="s">"model_used"</span>: <span class="s">"deepseek-coder-v2:16b"</span>,
+  <span class="s">"rag_sources"</span>: [<span class="s">"nvd.nist.gov/local"</span>, <span class="s">"memory:episodes"</span>],
+  <span class="s">"response"</span>: <span class="s">"..."</span>,
+  <span class="s">"armed_check"</span>: <span class="s">"PASSED"</span>,
+  <span class="s">"audit_hash"</span>: <span class="s">"sha256:3f4a..."</span>,
+  <span class="s">"latency_ms"</span>: <span class="n">187</span>
+}</div>
+    </div>
+  </div>
+
+  <!-- ===== TAB: SECURITE ===== -->
+  <div id="tab-securite" class="tab-section">
+    <div class="section-title">Posture de sécurité</div>
+    <div class="grid2" style="margin-bottom:24px;">
+      <div class="panel sec-panel">
+        <div class="br"></div><div class="bl"></div>
+        <div class="panel-title sec"><span class="ptdot sec"></span>Chiffrement</div>
+        <div class="spec-row"><span class="spec-key">Données au repos</span><span class="spec-val med">AES-256-GCM</span></div>
+        <div class="spec-row"><span class="spec-key">Transport</span><span class="spec-val med">TLS 1.3 · mTLS inter-services</span></div>
+        <div class="spec-row"><span class="spec-key">Vecteurs ChromaDB</span><span class="spec-val med">Fernet (AES-128-CBC + HMAC)</span></div>
+        <div class="spec-row"><span class="spec-key">JWT signing</span><span class="spec-val">RS256 (4096-bit)</span></div>
+        <div class="spec-row"><span class="spec-key">Secrets</span><span class="spec-val">HashiCorp Vault · rotation 90j</span></div>
+        <div class="spec-row"><span class="spec-key">Post-quantum (roadmap)</span><span class="spec-val sec">Kyber-768 · Q3 2026</span></div>
+      </div>
+      <div class="panel sec-panel">
+        <div class="br"></div><div class="bl"></div>
+        <div class="panel-title sec"><span class="ptdot sec"></span>Isolation & Sandboxing</div>
+        <div class="spec-row"><span class="spec-key">Agents</span><span class="spec-val med">bubblewrap (seccomp + namespaces)</span></div>
+        <div class="spec-row"><span class="spec-key">Conteneurs</span><span class="spec-val med">Podman rootless</span></div>
+        <div class="spec-row"><span class="spec-key">Réseau</span><span class="spec-val">VLAN isolé · WireGuard mesh</span></div>
+        <div class="spec-row"><span class="spec-key">Accès root</span><span class="spec-val med">JAMAIS en production</span></div>
+        <div class="spec-row"><span class="spec-key">Inter-modules</span><span class="spec-val">Zero-Trust · JWT par appel</span></div>
+        <div class="spec-row"><span class="spec-key">WAF</span><span class="spec-val">CrowdSec · Fail2ban · rate-limit</span></div>
+      </div>
+    </div>
+
+    <div class="section-title">Niveaux d'alerte ARMED</div>
+    <div class="panel" style="margin-bottom:24px;">
+      <div class="br"></div><div class="bl"></div>
+      <div class="panel-title sec"><span class="ptdot sec"></span>Protocole d'escalade</div>
+      <table class="int-table">
+        <thead>
+          <tr>
+            <th>Niveau</th><th>Déclencheur</th><th>Action Z-PUCE</th><th>Notification</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge med">NIV 1 · LOG</span></td>
+            <td style="color:var(--text2)">Anomalie mineure, scan port</td>
+            <td>Enregistrement audit trail</td>
+            <td>Log Grafana</td>
+          </tr>
+          <tr>
+            <td><span class="badge z">NIV 2 · ALERT</span></td>
+            <td style="color:var(--text2)">Tentative brute-force, CVE détectée</td>
+            <td>Blocage temporaire + alerte</td>
+            <td>Admin (Slack/mail)</td>
+          </tr>
+          <tr>
+            <td><span class="badge sec">NIV 3 · BLOCK</span></td>
+            <td style="color:var(--text2)">SQLi, XSS, exfiltration tentée</td>
+            <td>Blocage IP + isolation session</td>
+            <td>Admin + DPO</td>
+          </tr>
+          <tr>
+            <td><span class="badge" style="background:rgba(255,0,0,0.1);color:#ff4444;border:1px solid rgba(255,0,0,0.3);">NIV 4 · CRITICAL</span></td>
+            <td style="color:var(--text2)">Breach confirmée, data leak</td>
+            <td>Shutdown complet + forensics</td>
+            <td>Admin + DPO + CNIL + CERT</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-title">Métriques de sécurité — Objectifs v1.0</div>
+    <div class="panel">
+      <div class="br"></div><div class="bl"></div>
+      <div class="panel-title sec"><span class="ptdot sec"></span>KPIs souverains</div>
+      <div class="metric-row">
+        <span class="metric-label">Couverture chiffrement données</span>
+        <div class="metric-bar-wrap"><div class="metric-bar" style="width:100%;background:var(--med);"></div></div>
+        <span class="metric-val">100%</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">Isolation inter-agents</span>
+        <div class="metric-bar-wrap"><div class="metric-bar" style="width:100%;background:var(--med);"></div></div>
+        <span class="metric-val">100%</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">Conformité RGPD Art.32</span>
+        <div class="metric-bar-wrap"><div class="metric-bar" style="width:96%;background:var(--z);"></div></div>
+        <span class="metric-val">96%</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">Détection anomalies (F1-score cible)</span>
+        <div class="metric-bar-wrap"><div class="metric-bar" style="width:94%;background:var(--puce);"></div></div>
+        <span class="metric-val">0.94</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">Couverture observabilité OpenTelemetry</span>
+        <div class="metric-bar-wrap"><div class="metric-bar" style="width:88%;background:var(--gold);"></div></div>
+        <span class="metric-val">88%</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">Post-quantum readiness (roadmap Q3)</span>
+        <div class="metric-bar-wrap"><div class="metric-bar" style="width:15%;background:var(--sec);"></div></div>
+        <span class="metric-val">15%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TAB: INTEGRATION ===== -->
+  <div id="tab-integration" class="tab-section">
+    <div class="section-title">Intégration écosystème Z-CORE</div>
+    <div class="panel" style="margin-bottom:24px;">
+      <div class="br"></div><div class="bl"></div>
+      <div class="panel-title"><span class="ptdot puce"></span>Matrice d'intégration</div>
+      <table class="int-table">
+        <thead>
+          <tr>
+            <th>Module</th><th>Protocole</th><th>Données échangées</th><th>Chiffrement</th><th>Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge z">Z-CORE</span></td>
+            <td style="color:var(--text2)">LangGraph · REST</td>
+            <td style="color:var(--text2)">Contexte routé, prompt</td>
+            <td><span class="badge med">AES-256-GCM</span></td>
+            <td><span class="badge ok">✓ ACTIF</span></td>
+          </tr>
+          <tr>
+            <td><span class="badge sec">NetSecurePro</span></td>
+            <td style="color:var(--text2)">FastAPI · gRPC</td>
+            <td style="color:var(--text2)">Alertes, scans, CVE</td>
+            <td><span class="badge med">mTLS + JWT</span></td>
+            <td><span class="badge ok">✓ ACTIF</span></td>
+          </tr>
+          <tr>
+            <td><span class="badge med">MedicalTracker</span></td>
+            <td style="color:var(--text2)">FHIR R4 · REST</td>
+            <td style="color:var(--text2)">Anonymisé, agrégé</td>
+            <td><span class="badge med">HDS + AES</span></td>
+            <td><span class="badge ok">✓ ACTIF</span></td>
+          </tr>
+          <tr>
+            <td><span class="badge gold">SnowflakeSync</span></td>
+            <td style="color:var(--text2)">Batch · Kafka</td>
+            <td style="color:var(--text2)">Métriques anonymisées</td>
+            <td><span class="badge med">k-anonymity</span></td>
+            <td><span class="badge ok">✓ ACTIF</span></td>
+          </tr>
+          <tr>
+            <td><span class="badge puce">IA22_TUNNEL</span></td>
+            <td style="color:var(--text2)">Ngrok · CF Tunnel</td>
+            <td style="color:var(--text2)">Proxy inference GGUF</td>
+            <td><span class="badge med">TLS 1.3 · JWT</span></td>
+            <td><span class="badge ok">✓ ACTIF</span></td>
+          </tr>
+          <tr>
+            <td><span class="badge" style="background:rgba(255,215,0,0.1);color:#ffd700;border:1px solid rgba(255,215,0,0.3);">NutriTrack</span></td>
+            <td style="color:var(--text2)">REST</td>
+            <td style="color:var(--text2)">Profil nutritionnel</td>
+            <td><span class="badge med">AES-256</span></td>
+            <td><span class="badge" style="background:rgba(255,215,0,0.1);color:#ffd700;">Q2 2026</span></td>
+          </tr>
+          <tr>
+            <td><span class="badge" style="background:rgba(168,85,247,0.1);color:#a855f7;border:1px solid rgba(168,85,247,0.3);">PsyCore</span></td>
+            <td style="color:var(--text2)">REST</td>
+            <td style="color:var(--text2)">Santé mentale anonymisée</td>
+            <td><span class="badge med">AES-256 + HDS</span></td>
+            <td><span class="badge" style="background:rgba(255,215,0,0.1);color:#ffd700;">Q2 2026</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-title">Guide de déploiement rapide</div>
+    <div class="panel">
+      <div class="br"></div><div class="bl"></div>
+      <div class="panel-title z"><span class="ptdot z"></span>Docker Compose — Z-PUCE Stack</div>
+      <div class="code-block"><span class="c"># docker-compose.zpuce.yml</span>
+<span class="k">services</span>:
+  <span class="n">zpuce-api</span>:
+    image: <span class="s">netsecurepro/zpuce:1.0</span>
+    environment:
+      - VAULT_ADDR=<span class="s">http://vault:8200</span>
+      - OLLAMA_HOST=<span class="s">http://ollama:11434</span>
+      - CHROMA_HOST=<span class="s">http://chromadb:8000</span>
+      - ZPUCE_SECRET=<span class="s">${{VAULT_SECRET}}</span>  <span class="c"># Jamais hardcodé</span>
+    networks: [zpuce-net]
+    security_opt: [no-new-privileges:true]
+    
+  <span class="n">ollama</span>:
+    image: <span class="s">ollama/ollama:latest</span>
+    volumes: [ollama-models:/root/.ollama]
+    networks: [zpuce-net]
+    
+  <span class="n">chromadb</span>:
+    image: <span class="s">chromadb/chroma:latest</span>
+    environment:
+      - CHROMA_SERVER_AUTHN_CREDENTIALS=<span class="s">${{CHROMA_TOKEN}}</span>
+    volumes: [chroma-data:/chroma/chroma]
+    networks: [zpuce-net]
+    
+  <span class="n">vault</span>:
+    image: <span class="s">hashicorp/vault:1.17</span>
+    cap_add: [IPC_LOCK]
+    networks: [zpuce-net]
+
+<span class="k">networks</span>:
+  zpuce-net: {driver: bridge, internal: true}  <span class="c"># Isolé</span></div>
+    </div>
+  </div>
+
+  <!-- ===== TAB: ROADMAP ===== -->
+  <div id="tab-roadmap" class="tab-section">
+    <div class="section-title">Roadmap Z-PUCE 2026</div>
+    <div class="grid2" style="margin-bottom:24px;">
+      <div class="panel">
+        <div class="br"></div><div class="bl"></div>
+        <div class="panel-title med"><span class="ptdot med"></span>Q1 2026 — Fondations</div>
+        <div class="roadmap-item">
+          <div class="rm-phase" style="color:var(--med)">Q1</div>
+          <div class="rm-content">
+            <div class="rm-title">Architecture 6 couches</div>
+            <div class="rm-items">Input Gate · MoE Router · Inference Engine · RAG Souverain · Mémoire Agentique · Gouvernance ARMED</div>
+          </div>
+        </div>
+        <div class="roadmap-item">
+          <div class="rm-phase" style="color:var(--med)">Q1</div>
+          <div class="rm-content">
+            <div class="rm-title">Stack modèles initialisée</div>
+            <div class="rm-items">Qwen2.5 · DeepSeek-Coder · BioMistral · Gemma3 · BAAI/bge-m3</div>
+          </div>
+        </div>
+        <div class="roadmap-item">
+          <div class="rm-phase" style="color:var(--med)">Q1</div>
+          <div class="rm-content">
+            <div class="rm-title">Intégration Z-CORE</div>
+            <div class="rm-items">LangGraph orchestration · JWT zero-trust · ChromaDB chiffré</div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="br"></div><div class="bl"></div>
+        <div class="panel-title" style="color:var(--z)"><span class="ptdot z"></span>Q2 2026 — Intelligence</div>
+        <div class="roadmap-item">
+          <div class="rm-phase" style="color:var(--z)">Q2</div>
+          <div class="rm-content">
+            <div class="rm-title">MoE dynamique amélioré</div>
+            <div class="rm-items">Auto-routing basé sur métriques de performance · apprentissage des patterns</div>
+          </div>
+        </div>
+        <div class="roadmap-item">
+          <div class="rm-phase" style="color:var(--z)">Q2</div>
+          <div class="rm-content">
+            <div class="rm-title">Détection anomalies avancée</div>
+            <div class="rm-items">LSTM-AE amélioré · F1 ≥ 0.96 · réduction faux positifs</div>
+          </div>
+        </div>
+        <div class="roadmap-item">
+          <div class="rm-phase" style="color:var(--z)">Q2</div>
+          <div class="rm-content">
+            <div class="rm-title">Intégration NutriTrack + PsyCore</div>
+            <div class="rm-items">Cross-module routing sécurisé · mémoire partagée chiffrée</div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="br"></div><div class="bl"></div>
+        <div class="panel-title" style="color:var(--gold)"><span class="ptdot gold"></span>Q3 2026 — Certification</div>
+        <div class="roadmap-item">
+          <div class="rm-phase" style="color:var(--gold)">Q3</div>
+          <div class="rm-content">
+            <div class="rm-title">Post-Quantum Cryptography</div>
+            <div class="rm-items">Kyber-768 pour échange de clés · CRYSTALS-Dilithium pour signatures</div>
+          </div>
+        </div>
+        <div class="roadmap-item">
+          <div class="rm-phase" style="color:var(--gold)">Q3</div>
+          <div class="rm-content">
+            <div class="rm-title">Certification HDS + ISO 27001</div>
+            <div class="rm-items">Audit tiers · Pentest · Documentation conformité complète</div>
+          </div>
+        </div>
+        <div class="roadmap-item">
+          <div class="rm-phase" style="color:var(--gold)">Q3</div>
+          <div class="rm-content">
+            <div class="rm-title">Edge computing</div>
+            <div class="rm-items">Z-PUCE-Lite pour Raspberry Pi 5 · modèles &lt;1B Q4</div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="br"></div><div class="bl"></div>
+        <div class="panel-title puce"><span class="ptdot puce"></span>Q4 2026 — Écosystème</div>
+        <div class="roadmap-item">
+          <div class="rm-phase" style="color:var(--puce)">Q4</div>
+          <div class="rm-content">
+            <div class="rm-title">SDK partenaires Z-PUCE</div>
+            <div class="rm-items">Python · TypeScript · Rust bindings · Documentation publique</div>
+          </div>
+        </div>
+        <div class="roadmap-item">
+          <div class="rm-phase" style="color:var(--puce)">Q4</div>
+          <div class="rm-content">
+            <div class="rm-title">Marketplace modules</div>
+            <div class="rm-items">Experts MoE tiers · plugins sécurité certifiés Z-PUCE</div>
+          </div>
+        </div>
+        <div class="roadmap-item">
+          <div class="rm-phase" style="color:var(--puce)">Q4</div>
+          <div class="rm-content">
+            <div class="rm-title">WASM inference</div>
+            <div class="rm-items">Z-PUCE-Web : inférence navigateur via WebAssembly · zéro serveur</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <span>NETSECUREPRO IA</span>
+  <span class="footer-center">MOHAMMED ILYES ZOUBIROU</span>
+  <span>Z-PUCE · v1.0 · 2026</span>
+</footer>
+
+<script>
+// BOOT SEQUENCE
+const bootMsgs = [
+  'INIT Z-PUCE v1.0...',
+  'CHARGEMENT COUCHES...',
+  'INPUT GATE... OK',
+  'MOE ROUTER... OK',
+  'INFERENCE ENGINE... OK',
+  'RAG SOUVERAIN... OK',
+  'MÉMOIRE AGENTIQUE... OK',
+  'GOUVERNANCE ARMED... OK',
+  'CHIFFREMENT AES-256... OK',
+  'ZERO-TRUST ACTIVÉ... OK',
+  'SYSTÈME OPÉRATIONNEL.'
+];
+let i = 0;
+const bar = document.getElementById('bbar');
+const msg = document.getElementById('boot-msg');
+const boot = document.getElementById('boot');
+
+function nextMsg() {
+  if (i < bootMsgs.length) {
+    msg.textContent = bootMsgs[i];
+    bar.style.width = ((i+1)/bootMsgs.length*100) + '%';
+    i++;
+    setTimeout(nextMsg, i === bootMsgs.length ? 400 : 180);
+  } else {
+    boot.style.transition = 'opacity 0.6s ease';
+    boot.style.opacity = '0';
+    setTimeout(() => boot.style.display='none', 600);
+  }
+}
+setTimeout(nextMsg, 300);
+
+// TABS
+function showTab(id) {
+  document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+</script>
+</body>
+</html>
