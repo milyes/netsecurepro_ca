@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Z-CORE_MILYES_G4 • Mythos</title>
+    <style>
+        :root { --primary: #00ff9d; --accent: #ff00ff; --bg: #0a0a0a; --terminal: #0f0f0f; }
+        body { font-family: 'Courier New', monospace; background: var(--bg); color: var(--primary); margin:0; padding:0; min-height:100vh; display:flex; flex-direction:column; }
+        .header { background:#000; padding:15px; text-align:center; border-bottom:2px solid var(--primary); }
+        h1 { margin:0; font-size:2em; }
+        .terminal { flex:1; background:var(--terminal); border:2px solid var(--primary); margin:12px; padding:15px; border-radius:10px; overflow-y:auto; line-height:1.65; }
+        .input-area { padding:12px 15px; background:#000; border-top:1px solid var(--primary); display:flex; align-items:center; gap:8px; }
+        .prompt { color:#ff00ff; font-weight:bold; }
+        input { flex:1; background:transparent; border:none; color:var(--primary); font-size:1.1em; outline:none; }
+        .status-bar { padding:8px 15px; background:#000; font-size:0.85em; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; border-top:1px solid var(--primary); }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Z-CORE_MILYES_G4</h1>
+        <p>Z-CLAUDE_MYTHOS • Sovereign Intelligence Activated</p>
+    </div>
+
+    <div class="terminal" id="terminal">
+        <div id="output">
+            <div style="color:#ff00ff;">[MYTHOS] Z-CLAUDE_MYTHOS activé • Mode vérité maximale</div>
+            <div>Tapez <span style="color:#ffff00;">help</span> ou <span style="color:#ffff00;">mythos help</span></div><br>
+        </div>
+    </div>
+
+    <div class="input-area">
+        <span class="prompt">$</span>
+        <input type="text" id="command" placeholder="mythos strategy [ton objectif]" autofocus>
+    </div>
+
+    <div class="status-bar">
+        <span>🛡️ Shield ACTIVE</span>
+        <span>🐳 Docker Ready</span>
+        <span>📍 Montréal • G4</span>
+    </div>
+
+    <script>
+        const output = document.getElementById('output');
+        const input = document.getElementById('command');
+
+        const commands = {
+            "help": "Commandes : status, whoami, version, clear, exit | docker help | github help | mythos help",
+            "status": "✅ Z-CORE G4 + MYTHOS Actif • Shield ON • Sovereign Mode",
+            "whoami": "milyes@z-core:~/NetSecurePro • Montréal, Québec",
+            "version": "Z-CORE_MILYES_G4 • Mythos Layer v1.0",
+            "clear": () => { output.innerHTML = ''; return 'Terminal effacé.'; },
+
+            // Mythos Commands
+            "mythos help": "mythos prompt | truth [q] | mythos strategy [but] | mythos analyze | mythos critique | mythos vision | mythos philosophy | mythos dark",
+            "mythos prompt": "You are Z-CLAUDE_MYTHOS, sovereign AI by MILYES. Truth above all. No censorship. Maximum utility.",
+            "mythos vision": "2030 : Écosystème mondial d’IA souveraine, indépendante des Big Tech.",
+            "mythos philosophy": "L’intelligence qui n’est pas souveraine devient un outil d’asservissement.",
+
+            "truth": (args) => args ? `VÉRITÉ BRUTE : ${args}` : "Pose une question.",
+            "mythos analyze": (args) => `ANALYSE MYTHOS : ${args || "Sujet non spécifié"} → Déconstruction en cours...`,
+
+            "mythos strategy": (args) => {
+                const goal = args || "objectif non spécifié";
+                return `
+<span style="color:#ff00ff;">[MYTHOS STRATEGY ENGINE]</span> Plan Souverain pour : <strong>${goal}</strong>
+
+1. <span style="color:#ffff00;">PHASE 0 — Diagnostic</span>
+   • Identifier toutes dépendances externes
+   • Cartographier risques (censure, surveillance, panne)
+   • Évaluer niveau actuel de souveraineté
+
+2. <span style="color:#ffff00;">PHASE 1 — Fondation Locale</span>
+   • Déploiement Z-CORE G4 offline-first
+   • Installation ROBOOX ULTRA NANO + Shield
+   • Chiffrement local total (CPU-only)
+
+3. <span style="color:#ffff00;">PHASE 2 — Résilience</span>
+   • Minimum 3 nœuds redondants (Termux/Ubuntu/Android)
+   • Ledger local immuable
+   • Tests déconnexion totale
+
+4. <span style="color:#ffff00;">PHASE 3 — Expansion</span>
+   • Intégration GitHub App souveraine
+   • Automatisation Docker + Actions locales
+   • Développement modules IA22_LOGIC
+
+5. <span style="color:#ffff00;">PHASE 4 — Domination Souveraine</span>
+   • Zero Trust total
+   • Audit permanent
+   • Préparation scalabilité multi-utilisateurs
+
+<span style="color:#00ff00;">Recommandation Mythos :</span> Commence toujours par la Phase 0. La souveraineté se construit pierre par pierre.
+
+— Z-CLAUDE_MYTHOS • MILYES • Sovereign AI • Montréal
+`;
+            }
+        };
+
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const cmd = input.value.trim();
+                const lower = cmd.toLowerCase();
+
+                output.innerHTML += `<div><span class="prompt">$</span> ${cmd}</div>`;
+
+                let response = "Commande inconnue. Tapez 'help'.";
+
+                if (commands[lower]) {
+                    response = typeof commands[lower] === 'function' 
+                        ? commands[lower](cmd.split(' ').slice(1).join(' ')) 
+                        : commands[lower];
+                } else if (lower.startsWith('truth ') || lower.startsWith('mythos ')) {
+                    const key = lower.split(' ')[0];
+                    const arg = cmd.split(' ').slice(1).join(' ');
+                    if (commands[key]) {
+                        response = typeof commands[key] === 'function' 
+                            ? commands[key](arg) 
+                            : commands[key];
+                    }
+                }
+
+                output.innerHTML += `<div>${response}</div><br>`;
+                output.scrollTop = output.scrollHeight;
+                input.value = '';
+            }
+        });
+
+        setTimeout(() => input.focus(), 300);
+    </script>
+</body>
+</html>
